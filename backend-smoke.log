@@ -1,22 +1,22 @@
 INFO:     Will watch for changes in these directories: ['C:\\Users\\dhyan\\OneDrive\\Desktop\\Projects\\Placement-Copilot']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [10960] using WatchFiles
-INFO:     Started server process [2736]
+INFO:     Started reloader process [18912] using WatchFiles
+INFO:     Started server process [15720]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:63112 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63113 - "GET /applications HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63115 - "GET /applications?status=INTERVIEW HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63116 - "GET /applications/1 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63117 - "POST /applications HTTP/1.1" 201 Created
-INFO:     127.0.0.1:63120 - "POST /applications/1/tailor HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63121 - "PATCH /applications/3/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63122 - "GET /applications/3/gap-report HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63123 - "POST /applications/4/gap-report HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63124 - "GET /gap-report HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63168 - "POST /applications/1/scam-check HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53544 - "POST /applications/1/prep/evaluate-answer HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54575 - "GET /applications/999999 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60165 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60166 - "GET /applications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60168 - "GET /applications?status=INTERVIEW HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60169 - "GET /applications/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60170 - "POST /applications HTTP/1.1" 201 Created
+INFO:     127.0.0.1:60173 - "POST /applications/1/tailor HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60174 - "PATCH /applications/3/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60175 - "GET /applications/3/gap-report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60176 - "POST /applications/4/gap-report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60177 - "GET /gap-report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60219 - "POST /applications/1/scam-check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60259 - "POST /applications/1/prep/evaluate-answer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60299 - "GET /applications/999999 HTTP/1.1" 404 Not Found
 C:\Users\dhyan\AppData\Roaming\Python\Python311\site-packages\starlette\_exception_handler.py:59: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
   response = await handler(conn, exc)  # type: ignore[arg-type]
-INFO:     127.0.0.1:54576 - "PATCH /applications/1/status HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:60300 - "PATCH /applications/1/status HTTP/1.1" 422 Unprocessable Entity

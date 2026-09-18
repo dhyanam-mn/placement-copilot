@@ -106,10 +106,18 @@ class PrepEvaluateRequest(BaseModel):
     question_tags: List[str]
 
 
+class ResourceItem(BaseModel):
+    skill: str
+    title: str
+    url: str
+
+
 class PrepEvaluateResponse(BaseModel):
     keyword_coverage: float
     feedback_text: str
     flagged_as_weak: bool
+    recommended_resources: Optional[List[ResourceItem]] = None
+    actionable_suggestions: Optional[List[str]] = None
 
 
 # --- Standard Error Schema ---

@@ -111,6 +111,12 @@ class PrepEvaluateRequest(BaseModel):
     )
 
 
+class ResourceItem(BaseModel):
+    skill: str
+    title: str
+    url: str
+
+
 class PrepEvaluateResponse(BaseModel):
     keyword_coverage: float = Field(
         ...,
@@ -123,4 +129,12 @@ class PrepEvaluateResponse(BaseModel):
     flagged_as_weak: bool = Field(
         ...,
         description="True if keyword_coverage < 0.3",
+    )
+    recommended_resources: Optional[List[ResourceItem]] = Field(
+        default=None,
+        description="Curated documentation and resource links for target skills",
+    )
+    actionable_suggestions: Optional[List[str]] = Field(
+        default=None,
+        description="Specific actionable recommendations to improve skill coverage",
     )

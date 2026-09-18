@@ -78,24 +78,28 @@ def get_application_by_id(id: int, db: Session = Depends(get_db)):
     return app
 
 
-# --- 3. POST /applications ---
-@router.post("/applications", response_model=ApplicationResponse, status_code=201)
-async def create_application(payload: ApplicationCreateRequest, db: Session = Depends(get_db)):
+async def process_and_create_application(
+    payload: ApplicationCreateRequest, db: Session
+) -> Application:
+    """Core logic to embed JD against base resume bullets, calculate match score, and store application."""
     base_bullets = _load_base_resume()
     sample_bullets = [b["bullet"] for b in base_bullets]
 
     texts_to_embed = [payload.jd_text] + sample_bullets
 
     # Calls model-service /embed at localhost:8001
-    embed_data = await call_embed(texts_to_embed)
-    embeddings = embed_data.get("embeddings", [])
+    try:
+        embed_data = await call_embed(texts_to_embed)
+        embeddings = embed_data.get("embeddings", [])
 
-    if len(embeddings) >= 2:
-        jd_emb = embeddings[0]
-        bullet_embs = embeddings[1:]
-        sim_scores = [_cosine_similarity(jd_emb, b_emb) for b_emb in bullet_embs]
-        match_score = round(float(max(sim_scores)), 2)
-    else:
+        if len(embeddings) >= 2:
+            jd_emb = embeddings[0]
+            bullet_embs = embeddings[1:]
+            sim_scores = [_cosine_similarity(jd_emb, b_emb) for b_emb in bullet_embs]
+            match_score = round(float(max(sim_scores)), 2)
+        else:
+            match_score = 0.50
+    except (ModelServiceUnavailableError, Exception):
         match_score = 0.50
 
     new_app = Application(
@@ -114,6 +118,24 @@ async def create_application(payload: ApplicationCreateRequest, db: Session = De
     return new_app
 
 
+# --- 3. POST /applications ---
+@router.post("/applications", response_model=ApplicationResponse, status_code=201)
+async def create_application(payload: ApplicationCreateRequest, db: Session = Depends(get_db)):
+    return await process_and_create_application(payload, db)
+
+
+# --- 3b. POST /scout/sync ---
+@router.post("/scout/sync")
+async def trigger_scout_job_sourcing(
+    dry_run: bool = Query(False, description="Set true to preview jobs without saving to DB"),
+    db: Session = Depends(get_db),
+):
+    """Trigger Scout Agent live job sourcing from SerpAPI and Unstop."""
+    from services.job_sourcing import run_job_sourcing
+    result = await run_job_sourcing(db, dry_run=dry_run)
+    return result
+
+
 # --- 4. PATCH /applications/{id}/status ---
 @router.patch("/applications/{id}/status", response_model=ApplicationResponse)
 async def update_application_status(
@@ -130,6 +152,11 @@ async def update_application_status(
     if payload.status_source:
         app.status_source = payload.status_source
 
+    # Update last_contact_date for real signals (manual, gmail_auto),
+    # but DO NOT touch last_contact_date for auto_ghost (which is the absence of a signal).
+    if payload.status_source != "auto_ghost":
+        from datetime import datetime, timezone
+        app.last_contact_date = datetime.now(timezone.utc)
     db.commit()
     db.refresh(app)
 

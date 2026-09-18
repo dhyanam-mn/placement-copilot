@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from routers.applications import router as applications_router
+from routers.gmail import router as gmail_router
 
 logger = logging.getLogger("uvicorn.info")
 
@@ -69,6 +70,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 # Register routers
 app.include_router(applications_router)
+app.include_router(gmail_router)
 
 
 @app.get("/health")

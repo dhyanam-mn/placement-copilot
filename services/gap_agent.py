@@ -68,11 +68,12 @@ async def generate_per_row_gap_report(db: Session, application: Application) -> 
 
     # Attempt to call model-service /llm-generate for task_type 'gap_summary'
     try:
-        role_tag = "SDE" if "sde" in application.role.lower() else ("CV" if "cv" in application.role.lower() else "General")
         context = {
-            "rejected_applications": [
-                {"role_tag": role_tag, "rejection_stage": application.status}
-            ]
+            "company": application.company,
+            "role": application.role,
+            "jd_required_skills": required_skills,
+            "matched_skills": matched,
+            "missing_skills": missing,
         }
         llm_resp = await call_llm_generate("gap_summary", context=context)
         summary_text = llm_resp.get("generated_text") or fallback_summary

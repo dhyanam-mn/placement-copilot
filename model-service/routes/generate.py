@@ -92,6 +92,40 @@ Instructions:
 - Do NOT output preamble, markdown headings, or filler text."""
 
     elif task_type == "gap_summary":
+        if "jd_required_skills" in context or "missing_skills" in context:
+            company = context.get("company", "the company")
+            role = context.get("role", "the role")
+            required = context.get("jd_required_skills", [])
+            matched = context.get("matched_skills", [])
+            missing = context.get("missing_skills", [])
+            
+            req_str = ", ".join(required) if required else "None"
+            matched_str = ", ".join(matched) if matched else "None"
+            missing_str = ", ".join(missing) if missing else "None"
+            
+            if not missing:
+                missing_note = "All primary JD technical skills were matched in the resume. No missing technical skill gap was identified for this application."
+            else:
+                missing_note = f"Missing required technical skills: {missing_str}."
+
+            return f"""You are Placement Copilot's Gap Analysis Agent.
+Write a clear 1-2 sentence per-row gap summary for a specific job application.
+
+Application Context:
+- Company: {company}
+- Role: {role}
+- Required Skills: {req_str}
+- Matched Skills: {matched_str}
+- Missing Skills: {missing_str}
+
+Key Finding: {missing_note}
+
+Instructions:
+- Write 1-2 concise sentences summarizing the technical skill gap for THIS specific application.
+- If no skills are missing, state that the candidate met all primary technical requirements and the rejection/ghosting occurred post-assessment.
+- Do NOT mention aggregate patterns or other applications.
+- Do NOT output preamble, markdown headings, or conversational filler."""
+
         rejected_apps = context.get("rejected_applications", [])
         if rejected_apps:
             lines = []
@@ -111,7 +145,7 @@ Application Outcomes:
 {apps_text}
 
 Instructions:
-- Identify the main bottleneck stage (e.g., Online Assessment / OA) and role category.
+- Identify the main bottleneck stage (e.g., Online Assessment / OA) and role category across all applications.
 - Summarize the pattern and actionable insight in 1-2 concise sentences.
 - Do NOT output preamble, titles, or conversational filler."""
 

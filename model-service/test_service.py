@@ -3,10 +3,14 @@ import pytest
 from fastapi.testclient import TestClient
 from main import app
 
-client = TestClient(app)
+
+@pytest.fixture(scope="module")
+def client():
+    with TestClient(app) as c:
+        yield c
 
 
-def test_health():
+def test_health(client):
     response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
@@ -15,7 +19,7 @@ def test_health():
     print("[OK] /health passed")
 
 
-def test_embed_success():
+def test_embed_success(client):
     payload = {
         "texts": [
             "Built a drone orthomosaic detection pipeline using GeoTIFF and rasterio.",
@@ -33,7 +37,7 @@ def test_embed_success():
     print("[OK] /embed success passed")
 
 
-def test_embed_empty_string_error():
+def test_embed_empty_string_error(client):
     payload = {
         "texts": [
             "Valid bullet point",
@@ -48,7 +52,7 @@ def test_embed_empty_string_error():
     print("[OK] /embed empty string error passed")
 
 
-def test_embed_too_many_texts_error():
+def test_embed_too_many_texts_error(client):
     payload = {
         "texts": ["item" for _ in range(55)]
     }
@@ -60,7 +64,7 @@ def test_embed_too_many_texts_error():
     print("[OK] /embed too many texts error passed")
 
 
-def test_llm_generate_scam_explanation():
+def test_llm_generate_scam_explanation(client):
     payload = {
         "task_type": "scam_explanation",
         "context": {
@@ -84,7 +88,7 @@ def test_llm_generate_scam_explanation():
     print("[OK] /llm-generate scam_explanation passed")
 
 
-def test_llm_generate_answer_feedback():
+def test_llm_generate_answer_feedback(client):
     payload = {
         "task_type": "answer_feedback",
         "context": {
@@ -101,7 +105,7 @@ def test_llm_generate_answer_feedback():
     print("[OK] /llm-generate answer_feedback passed")
 
 
-def test_llm_generate_gap_summary():
+def test_llm_generate_gap_summary(client):
     payload = {
         "task_type": "gap_summary",
         "context": {
@@ -121,7 +125,7 @@ def test_llm_generate_gap_summary():
     print("[OK] /llm-generate gap_summary passed")
 
 
-def test_prep_evaluate_answer():
+def test_prep_evaluate_answer(client):
     payload = {
         "question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.",
         "student_answer": "I used sliding window tiling and filtered false positives based on confidence thresholds.",
@@ -137,12 +141,13 @@ def test_prep_evaluate_answer():
 
 
 if __name__ == "__main__":
-    test_health()
-    test_embed_success()
-    test_embed_empty_string_error()
-    test_embed_too_many_texts_error()
-    test_llm_generate_scam_explanation()
-    test_llm_generate_answer_feedback()
-    test_llm_generate_gap_summary()
-    test_prep_evaluate_answer()
-    print("\nAll 8 smoke tests passed successfully!")
+    with TestClient(app) as test_c:
+        test_health(test_c)
+        test_embed_success(test_c)
+        test_embed_empty_string_error(test_c)
+        test_embed_too_many_texts_error(test_c)
+        test_llm_generate_scam_explanation(test_c)
+        test_llm_generate_answer_feedback(test_c)
+        test_llm_generate_gap_summary(test_c)
+        test_prep_evaluate_answer(test_c)
+        print("\nAll 8 smoke tests passed successfully!")

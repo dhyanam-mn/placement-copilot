@@ -1,0 +1,59 @@
+{
+  "dronamaps_cv": [
+    "computer vision",
+    "yolov8",
+    "geotiff",
+    "rasterio",
+    "object detection",
+    "image processing",
+    "pytorch",
+    "drone",
+    "orthomosaic",
+    "opencv"
+  ],
+  "campus_connect_backend": [
+    "backend",
+    "fastapi",
+    "postgresql",
+    "redis",
+    "caching",
+    "rest apis",
+    "microservices",
+    "sql",
+    "distributed systems",
+    "python"
+  ],
+  "voice_ai": [
+    "voice ai",
+    "silero vad",
+    "whisper.cpp",
+    "audio",
+    "webrtc",
+    "speech recognition",
+    "real-time",
+    "streaming",
+    "python"
+  ],
+  "llama_classifier": [
+    "llama 3",
+    "lora",
+    "pytorch",
+    "nlp",
+    "transformers",
+    "llm",
+    "machine learning",
+    "text classification",
+    "summarization"
+  ],
+  "fullstack_app": [
+    "full-stack",
+    "react",
+    "typescript",
+    "node.js",
+    "express",
+    "graphql",
+    "tailwind css",
+    "frontend",
+    "web application"
+  ]
+}

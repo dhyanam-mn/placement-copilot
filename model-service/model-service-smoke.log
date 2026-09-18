@@ -1,0 +1,18 @@
+INFO:     Will watch for changes in these directories: ['C:\\Users\\dhyan\\OneDrive\\Desktop\\Projects\\Placement-Copilot\\model-service']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [6996] using WatchFiles
+INFO:     Started server process [5324]
+INFO:     Waiting for application startup.
+INFO:     Loading embedding model 'all-MiniLM-L6-v2' at startup...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 1109.41it/s]
+INFO:     Successfully loaded 'all-MiniLM-L6-v2' into app.state.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:60164 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60172 - "POST /embed HTTP/1.1" 200 OK
+WARNING:  Ollama local instance unavailable or timed out (). Returning error='llm_unavailable' for task_type 'gap_summary'.
+INFO:     127.0.0.1:60179 - "POST /llm-generate HTTP/1.1" 200 OK
+WARNING:  Ollama local instance unavailable or timed out (). Returning error='llm_unavailable' for task_type 'scam_explanation'.
+INFO:     127.0.0.1:60221 - "POST /llm-generate HTTP/1.1" 200 OK
+WARNING:  Ollama local instance unavailable or timed out (). Returning error='llm_unavailable' for task_type 'answer_feedback'.
+INFO:     127.0.0.1:60261 - "POST /prep/evaluate-answer HTTP/1.1" 200 OK

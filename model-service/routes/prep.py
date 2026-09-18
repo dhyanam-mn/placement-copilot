@@ -38,7 +38,7 @@ async def evaluate_answer(payload: PrepEvaluateRequest) -> PrepEvaluateResponse:
     2. Then calls the internal /llm-generate logic with task_type 'answer_feedback' to get qualitative feedback.
     3. Returns keyword_coverage (float 0-1), feedback_text (string), and flagged_as_weak (bool, true if coverage < 0.3).
     """
-    # Step 1: Cheap deterministic keyword presence check
+    # Step 1: Cheap deterministic keyword presence check (computed BEFORE any LLM call)
     student_ans_lower = payload.student_answer.lower()
     total_tags = len(payload.question_tags)
 
@@ -65,9 +65,14 @@ async def evaluate_answer(payload: PrepEvaluateRequest) -> PrepEvaluateResponse:
     )
 
     llm_response = await llm_generate(llm_request)
-    feedback_text = llm_response.generated_text
 
-    # Step 3: Return combined evaluation result
+    # Step 3: Handle feedback text fallback if LLM is unavailable
+    if llm_response.error == "llm_unavailable" or not llm_response.generated_text:
+        feedback_text = f"Keyword coverage: {keyword_coverage}. LLM feedback unavailable."
+    else:
+        feedback_text = llm_response.generated_text
+
+    # Step 4: Return combined evaluation result
     return PrepEvaluateResponse(
         keyword_coverage=keyword_coverage,
         feedback_text=feedback_text,

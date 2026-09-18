@@ -13,61 +13,6 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "10.0"))
 
 
-def _generate_placeholder_text(task_type: str, context: dict) -> str:
-    """
-    Fallback deterministic text generator when Ollama is unreachable or times out.
-    Conforms to MODEL_SERVICE_CONTRACT.md format.
-    """
-    if task_type == "scam_explanation":
-        flagged_reasons = context.get("flagged_reasons", [])
-        recruiter_info = context.get("recruiter_info", {})
-        claimed_company = (
-            recruiter_info.get("claimed_company")
-            or recruiter_info.get("name")
-            or "the company"
-        )
-
-        if flagged_reasons:
-            reasons_summary = ", and ".join(flagged_reasons)
-            return (
-                f"This looks risky: {reasons_summary}. "
-                f"Exercise caution before sharing personal data or proceeding with {claimed_company}."
-            )
-        return (
-            f"This looks risky: the sender's email domain doesn't match {claimed_company}'s official domain, "
-            "and asking for a processing fee before any interview is a common red flag."
-        )
-
-    elif task_type == "answer_feedback":
-        expected_topics = context.get("expected_topics", [])
-        if expected_topics:
-            highlight = expected_topics[0]
-            return (
-                f"Good coverage of key concepts — you explained your approach clearly. "
-                f"To strengthen your answer, explicitly emphasize '{highlight}' directly."
-            )
-        return (
-            "Good coverage of tiling and thresholding — you didn't explicitly name "
-            "'hard negative mining' itself, worth stating the term directly."
-        )
-
-    elif task_type == "gap_summary":
-        rejected = context.get("rejected_applications", [])
-        if rejected:
-            roles = list({item.get("role_tag") for item in rejected if isinstance(item, dict) and "role_tag" in item})
-            role_str = "/".join(roles) if roles else "target"
-            return (
-                f"You are consistently advancing past resume screening but facing bottlenecks "
-                f"during technical assessments for {role_str} roles."
-            )
-        return (
-            "You are consistently advancing past resume screening but facing bottlenecks "
-            "during the Online Assessment stage for SDE roles."
-        )
-
-    return "Fallback generation response."
-
-
 def _build_prompt(task_type: str, context: dict) -> str:
     """
     Construct short, tightly-scoped prompt templates for Ollama based on task_type.
@@ -173,12 +118,16 @@ Instructions:
     return f"Summarize the following context concisely: {context}"
 
 
-@router.post("/llm-generate", response_model=LLMGenerateResponse)
+@router.post(
+    "/llm-generate",
+    response_model=LLMGenerateResponse,
+    response_model_exclude_none=True,
+)
 async def llm_generate(payload: LLMGenerateRequest) -> LLMGenerateResponse:
     """
     Generate LLM text response using local Ollama (llama3.1:8b).
     Handles scam_explanation, answer_feedback, and gap_summary tasks.
-    Falls back gracefully to deterministic text if Ollama is offline or times out (10s limit).
+    Falls back gracefully to error='llm_unavailable' if Ollama is offline or times out (10s limit).
     """
     prompt = _build_prompt(payload.task_type, payload.context)
 
@@ -206,19 +155,18 @@ async def llm_generate(payload: LLMGenerateRequest) -> LLMGenerateResponse:
                 )
             else:
                 logger.warning(
-                    f"Ollama returned empty response for task_type '{payload.task_type}'. Using fallback."
+                    f"Ollama returned empty response for task_type '{payload.task_type}'."
                 )
 
     except (httpx.ConnectError, httpx.TimeoutException, httpx.HTTPStatusError, Exception) as err:
         logger.warning(
             f"Ollama local instance unavailable or timed out ({err}). "
-            f"Falling back to deterministic response for task_type '{payload.task_type}'."
+            f"Returning error='llm_unavailable' for task_type '{payload.task_type}'."
         )
 
     # Fallback path if Ollama is unreachable, times out, or errors out
-    fallback_text = _generate_placeholder_text(payload.task_type, payload.context)
     return LLMGenerateResponse(
-        generated_text=fallback_text,
+        generated_text="",
         task_type=payload.task_type,
         error="llm_unavailable",
     )

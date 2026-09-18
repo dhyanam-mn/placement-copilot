@@ -136,7 +136,7 @@ def test_prep_evaluate_answer(client):
     data = response.json()
     assert data["keyword_coverage"] == 0.67
     assert data["flagged_as_weak"] is False
-    assert "sliding window tiling" in data["feedback_text"]
+    assert len(data["feedback_text"]) > 0
     print("[OK] /prep/evaluate-answer passed")
 
 

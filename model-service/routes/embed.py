@@ -1,6 +1,5 @@
-import hashlib
 from typing import List
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Request, status
 from fastapi.responses import JSONResponse
 
 from schemas import EmbedRequest, EmbedResponse, ErrorResponse
@@ -11,31 +10,17 @@ MODEL_NAME = "all-MiniLM-L6-v2"
 DIMENSION = 384
 
 
-def generate_dummy_embedding(text: str, dim: int = DIMENSION) -> List[float]:
-    """
-    Generate deterministic placeholder embedding vector of specified dimension
-    based on the hash of the input text.
-    """
-    seed = int(hashlib.sha256(text.encode("utf-8")).hexdigest()[:8], 16)
-    vector: List[float] = []
-    current = seed
-    for _ in range(dim):
-        current = (current * 1103515245 + 12345) & 0x7FFFFFFF
-        val = ((current / 0x7FFFFFFF) * 2.0 - 1.0) * 0.1
-        vector.append(round(val, 4))
-    return vector
-
-
 @router.post(
     "/embed",
     response_model=EmbedResponse,
     responses={
         status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+        status.HTTP_503_SERVICE_UNAVAILABLE: {"model": ErrorResponse},
     },
 )
-async def create_embeddings(payload: EmbedRequest):
+async def create_embeddings(payload: EmbedRequest, request: Request):
     """
-    Generate embeddings for a list of texts (1-50 items).
+    Generate real sentence-transformers embeddings for a list of texts (1-50 items).
     Used by the Scout Agent to match resume bullets against JDs via cosine similarity.
     """
     texts = payload.texts
@@ -65,8 +50,22 @@ async def create_embeddings(payload: EmbedRequest):
                 content={"error": "empty_string", "detail": f"texts[{idx}] is empty"},
             )
 
-    # Generate placeholder embeddings
-    embeddings = [generate_dummy_embedding(text) for text in texts]
+    # Retrieve model loaded at startup in app.state
+    model = getattr(request.app.state, "model", None)
+    if model is None:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "error": "model_not_ready",
+                "detail": "Embedding model is still loading or unavailable",
+            },
+        )
+
+    # Generate embeddings using sentence-transformers model
+    raw_embeddings = model.encode(texts, convert_to_numpy=True)
+    embeddings: List[List[float]] = [
+        [round(float(val), 6) for val in emb] for emb in raw_embeddings
+    ]
 
     return EmbedResponse(
         embeddings=embeddings,

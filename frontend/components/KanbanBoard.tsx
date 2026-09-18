@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Application, ApplicationStatus } from '@/types';
-import { mockApplications } from '@/data/mockData';
+import { getApplications } from '@/lib/api';
 import { FolderArchive, Plus } from 'lucide-react';
 
 interface KanbanBoardProps {
@@ -17,65 +17,70 @@ interface ColumnConfig {
 }
 
 export const KanbanBoard: React.FC<KanbanBoardProps> = ({ onSelectApplication }) => {
-  const [applications] = useState<Application[]>(mockApplications);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    getApplications()
+      .then((data) => {
+        if (!cancelled) setApplications(data.applications);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || 'Failed to load applications');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const activeColumns: ColumnConfig[] = [
-    {
-      status: 'DISCOVERED',
-      title: 'Discovered',
-      badgeClass: 'text-discovered',
-      pillColor: '#9aa0a0',
-    },
-    {
-      status: 'READY_TO_APPLY',
-      title: 'Ready to Apply',
-      badgeClass: 'text-primary',
-      pillColor: '#6d8669',
-    },
-    {
-      status: 'APPLIED',
-      title: 'Applied',
-      badgeClass: 'text-applied',
-      pillColor: '#7b93ad',
-    },
-    {
-      status: 'OA_INVITE',
-      title: 'OA',
-      badgeClass: 'text-oa',
-      pillColor: '#b3936a',
-    },
-    {
-      status: 'INTERVIEW',
-      title: 'Interview',
-      badgeClass: 'text-interview',
-      pillColor: '#8a7bab',
-    },
-    {
-      status: 'OFFER',
-      title: 'Result',
-      badgeClass: 'text-primary',
-      pillColor: '#6d8669',
-    },
+    { status: 'DISCOVERED', title: 'Discovered', badgeClass: 'text-discovered', pillColor: '#9aa0a0' },
+    { status: 'READY_TO_APPLY', title: 'Ready to Apply', badgeClass: 'text-primary', pillColor: '#6d8669' },
+    { status: 'APPLIED', title: 'Applied', badgeClass: 'text-applied', pillColor: '#7b93ad' },
+    { status: 'OA_INVITE', title: 'OA', badgeClass: 'text-oa', pillColor: '#b3936a' },
+    { status: 'INTERVIEW', title: 'Interview', badgeClass: 'text-interview', pillColor: '#8a7bab' },
+    { status: 'OFFER', title: 'Result', badgeClass: 'text-primary', pillColor: '#6d8669' },
   ];
 
   const archivedColumns: ColumnConfig[] = [
-    {
-      status: 'GHOSTED',
-      title: 'Ghosted',
-      badgeClass: 'text-ghosted',
-      pillColor: '#a89a8c',
-    },
-    {
-      status: 'REJECTED',
-      title: 'Rejected',
-      badgeClass: 'text-rejected',
-      pillColor: '#b06a5f',
-    },
+    { status: 'GHOSTED', title: 'Ghosted', badgeClass: 'text-ghosted', pillColor: '#a89a8c' },
+    { status: 'REJECTED', title: 'Rejected', badgeClass: 'text-rejected', pillColor: '#b06a5f' },
   ];
 
-  const getAppsByStatus = (status: ApplicationStatus) => {
-    return applications.filter((app) => app.status === status);
-  };
+  const getAppsByStatus = (status: ApplicationStatus) =>
+    applications.filter((app) => app.status === status);
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <h2 className="text-2xl font-semibold tracking-tight text-text">
+          Your active applications
+        </h2>
+        <p className="text-sm text-text/60">Loading your pipeline…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <h2 className="text-2xl font-semibold tracking-tight text-text">
+          Your active applications
+        </h2>
+        <p className="text-sm text-rejected">
+          Couldn&apos;t reach the backend: {error}. Is it running on{' '}
+          {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}?
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-12">
@@ -139,7 +144,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ onSelectApplication })
                       >
                         {app.status_label || col.title}
                       </span>
-                      {app.match_score && (
+                      {app.match_score != null && (
                         <span className="text-[11px] text-text/50">
                           {Math.round(app.match_score * 100)}% match
                         </span>

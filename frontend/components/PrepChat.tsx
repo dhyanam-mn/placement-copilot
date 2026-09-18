@@ -1,39 +1,111 @@
 'use client';
 
-import React, { useState } from 'react';
-import { mockPrepEvaluation } from '@/data/mockData';
-import { MessageSquare, Check, RefreshCw, Send } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { PrepAnswerEvaluation } from '@/types';
+import { evaluatePrepAnswer } from '@/lib/api';
+import { RefreshCw, Send } from 'lucide-react';
 
-export const PrepChat: React.FC = () => {
-  const [question] = useState(mockPrepEvaluation.question);
-  const [tags] = useState(mockPrepEvaluation.question_tags);
-  const [answer, setAnswer] = useState(mockPrepEvaluation.student_answer);
-  const [submitted, setSubmitted] = useState(true);
-  const [evaluation, setEvaluation] = useState(mockPrepEvaluation);
+interface PrepChatProps {
+  applicationId?: number;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+const DEFAULT_QUESTION =
+  'Walk me through your approach to hard-negative mining in the DronaMaps pipeline.';
+const DEFAULT_TAGS = [
+  'hard negative mining',
+  'sliding window tiling',
+  'confidence thresholding',
+];
+const DEFAULT_ANSWER =
+  'I used sliding window tiling and filtered false positives based on confidence thresholds.';
+
+export const PrepChat: React.FC<PrepChatProps> = ({ applicationId = 1 }) => {
+  const [question] = useState(DEFAULT_QUESTION);
+  const [tags] = useState(DEFAULT_TAGS);
+  const [answer, setAnswer] = useState(DEFAULT_ANSWER);
+  const [submitted, setSubmitted] = useState(false);
+  const [evaluation, setEvaluation] = useState<PrepAnswerEvaluation | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [evaluating, setEvaluating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    evaluatePrepAnswer(applicationId, {
+      question,
+      student_answer: answer,
+      question_tags: tags,
+    })
+      .then((data) => {
+        if (!cancelled) {
+          setEvaluation(data);
+          setSubmitted(true);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || 'Failed to evaluate answer');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [applicationId, question, tags]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!answer.trim()) return;
 
-    // Deterministic keyword coverage check per MODEL_SERVICE_CONTRACT
-    const lowerAnswer = answer.toLowerCase();
-    const matchedCount = tags.filter((t) => lowerAnswer.includes(t.toLowerCase())).length;
-    const coverage = tags.length > 0 ? matchedCount / tags.length : 0;
-    const isWeak = coverage < 0.3;
+    setEvaluating(true);
+    setError(null);
 
-    setEvaluation({
-      question,
-      question_tags: tags,
-      student_answer: answer,
-      keyword_coverage: Number(coverage.toFixed(2)),
-      feedback_text:
-        coverage >= 0.66
-          ? "Solid coverage of core pipeline concepts. Focus on directly connecting each step to computational complexity and throughput."
-          : "Consider mentioning the key terms directly to ensure automated filters and interviewers capture all requirements.",
-      flagged_as_weak: isWeak,
-    });
-    setSubmitted(true);
+    try {
+      const data = await evaluatePrepAnswer(applicationId, {
+        question,
+        student_answer: answer,
+        question_tags: tags,
+      });
+      setEvaluation(data);
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to evaluate preparation answer');
+    } finally {
+      setEvaluating(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl space-y-8">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-text">
+            Interview Prep Agent
+          </h2>
+          <p className="text-sm text-text/60 mt-1">Loading prep evaluation…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !evaluation) {
+    return (
+      <div className="max-w-4xl space-y-8">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-text">
+            Interview Prep Agent
+          </h2>
+          <p className="text-sm text-rejected mt-1">
+            Couldn&apos;t reach the backend: {error}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl space-y-8">
@@ -93,7 +165,22 @@ export const PrepChat: React.FC = () => {
             <p className="text-xs text-text/80 leading-relaxed">
               {evaluation.feedback_text}
             </p>
+
+            {evaluation.actionable_suggestions && evaluation.actionable_suggestions.length > 0 && (
+              <div className="pt-2 border-t border-accent/20 space-y-1">
+                <span className="text-[11px] font-semibold text-text/70">Actionable Suggestions:</span>
+                <ul className="list-disc list-outside ml-4 text-xs text-text/70 space-y-1">
+                  {evaluation.actionable_suggestions.map((sug, idx) => (
+                    <li key={idx}>{sug}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
+        )}
+
+        {error && evaluation && (
+          <p className="text-xs text-rejected">{error}</p>
         )}
 
         {/* Answer Input Area */}
@@ -126,10 +213,11 @@ export const PrepChat: React.FC = () => {
 
             <button
               type="submit"
-              className="inline-flex items-center space-x-2 px-4 py-2 text-xs font-medium text-white bg-primary rounded hover:bg-primary/90 transition-colors"
+              disabled={evaluating}
+              className="inline-flex items-center space-x-2 px-4 py-2 text-xs font-medium text-white bg-primary rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>Evaluate answer</span>
+              <span>{evaluating ? 'Evaluating...' : 'Evaluate answer'}</span>
             </button>
           </div>
         </form>

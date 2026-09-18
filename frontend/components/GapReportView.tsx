@@ -1,13 +1,66 @@
 'use client';
 
-import React from 'react';
-import { mockAggregateGapReport } from '@/data/mockData';
+import React, { useEffect, useState } from 'react';
+import { GapReport } from '@/types';
+import { getAggregateGapReport } from '@/lib/api';
 import { AlertCircle, BarChart2 } from 'lucide-react';
 
 export const GapReportView: React.FC = () => {
-  const roleTags = Object.entries(
-    mockAggregateGapReport.details.by_role_tag || {}
-  );
+  const [report, setReport] = useState<GapReport | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    getAggregateGapReport()
+      .then((data) => {
+        if (!cancelled) setReport(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || 'Failed to fetch aggregate gap report');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl space-y-8">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-text">
+            Aggregate Gap Analysis
+          </h2>
+          <p className="text-sm text-text/60 mt-1">Loading gap analysis report…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-4xl space-y-8">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-text">
+            Aggregate Gap Analysis
+          </h2>
+          <p className="text-sm text-rejected mt-1">
+            Couldn&apos;t reach the backend: {error}. Is it running on{' '}
+            {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}?
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const roleTags = Object.entries(report?.details?.by_role_tag || {});
 
   const perRowExamples = [
     {
@@ -59,7 +112,7 @@ export const GapReportView: React.FC = () => {
           <span>Synthesis & Insight</span>
         </div>
         <p className="text-sm text-text/80 leading-relaxed font-normal">
-          &quot;{mockAggregateGapReport.summary_text}&quot;
+          &quot;{report?.summary_text}&quot;
         </p>
       </div>
 
@@ -88,9 +141,9 @@ export const GapReportView: React.FC = () => {
         {/* Role Rows */}
         <div className="space-y-6">
           {roleTags.map(([role, stats]) => {
-            const oaCount = stats.rejected_or_ghosted_at_oa || 0;
-            const interviewCount = stats.rejected_or_ghosted_at_interview || 0;
-            const maxVal = 4; // for relative bar widths
+            const oaCount = stats.rejected_at_oa ?? stats.rejected_or_ghosted_at_oa ?? 0;
+            const interviewCount = stats.rejected_at_interview ?? stats.rejected_or_ghosted_at_interview ?? 0;
+            const maxVal = Math.max(stats.total || 1, 4);
 
             return (
               <div key={role} className="space-y-2">

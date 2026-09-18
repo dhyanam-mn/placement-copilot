@@ -1,10 +1,119 @@
 'use client';
 
-import React from 'react';
-import { mockScamChecks } from '@/data/mockData';
+import React, { useEffect, useState } from 'react';
+import { runScamCheck } from '@/lib/api';
 import { ShieldAlert, ShieldCheck, Shield } from 'lucide-react';
 
-export const ScamCheckAlertCard: React.FC = () => {
+interface ScamCheckAlertCardProps {
+  applicationId?: number;
+}
+
+interface ScamCheckItem {
+  id: number;
+  risk_score: number;
+  flagged_reasons: string[];
+  explanation_text: string | null;
+  recruiter_name: string;
+  claimed_company: string;
+  recruiter_domain: string;
+}
+
+const INITIAL_RECRUITERS = [
+  {
+    recruiter_name: 'Robert Miller',
+    claimed_company: 'Meta Recruiting Operations',
+    recruiter_domain: 'meta-talent.io',
+  },
+  {
+    recruiter_name: 'Stark Global Solutions',
+    claimed_company: 'External Talent Agency',
+    recruiter_domain: 'starkglobal-hr.co',
+  },
+  {
+    recruiter_name: 'TechFlow Systems',
+    claimed_company: 'Series B Startup',
+    recruiter_domain: 'techflow.dev',
+  },
+];
+
+function getRiskLevel(score: number): 'HIGH' | 'MEDIUM' | 'LOW' {
+  if (score >= 0.7) return 'HIGH';
+  if (score >= 0.3) return 'MEDIUM';
+  return 'LOW';
+}
+
+export const ScamCheckAlertCard: React.FC<ScamCheckAlertCardProps> = ({
+  applicationId = 1,
+}) => {
+  const [items, setItems] = useState<ScamCheckItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    Promise.all(
+      INITIAL_RECRUITERS.map((r) =>
+        runScamCheck(applicationId, {
+          recruiter_name: r.recruiter_name,
+          recruiter_domain: r.recruiter_domain,
+          claimed_company: r.claimed_company,
+        }).then((res) => ({
+          ...res,
+          recruiter_name: r.recruiter_name,
+          claimed_company: r.claimed_company,
+          recruiter_domain: r.recruiter_domain,
+        }))
+      )
+    )
+      .then((results) => {
+        if (!cancelled) setItems(results);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || 'Failed to run scam checks');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [applicationId]);
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-text">
+            Verification Center
+          </h2>
+          <p className="text-sm text-text/60 mt-1">
+            Running verification checks on recruiter contacts…
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-text">
+            Verification Center
+          </h2>
+          <p className="text-sm text-rejected mt-1">
+            Couldn&apos;t reach the backend: {error}. Is it running on{' '}
+            {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}?
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -28,16 +137,17 @@ export const ScamCheckAlertCard: React.FC = () => {
 
       {/* Grid of Alert Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-        {mockScamChecks.map((item) => {
+        {items.map((item, index) => {
+          const riskLevel = getRiskLevel(item.risk_score);
           let badgeBg = 'bg-primary/15 text-primary';
           let borderAccent = 'border-accent/30';
           let RiskIcon = ShieldCheck;
 
-          if (item.risk_level === 'HIGH') {
+          if (riskLevel === 'HIGH') {
             badgeBg = 'bg-rejected/15 text-rejected';
             borderAccent = 'border-rejected/30';
             RiskIcon = ShieldAlert;
-          } else if (item.risk_level === 'MEDIUM') {
+          } else if (riskLevel === 'MEDIUM') {
             badgeBg = 'bg-accent/25 text-[#73684a]';
             borderAccent = 'border-accent/40';
             RiskIcon = Shield;
@@ -45,17 +155,17 @@ export const ScamCheckAlertCard: React.FC = () => {
 
           return (
             <div
-              key={item.id}
+              key={item.id || index}
               className={`p-6 rounded-lg bg-white border ${borderAccent} space-y-5`}
             >
               {/* Card Header */}
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-sm font-semibold text-text">{item.recruiter_name}</h3>
-                  <p className="text-xs text-text/60">{item.claimed_company}</p>
+                  <p className="text-xs text-text/60">{item.claimed_company} • {item.recruiter_domain}</p>
                 </div>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded tracking-wide ${badgeBg}`}>
-                  {item.risk_level === 'HIGH' ? 'High Risk' : item.risk_level === 'MEDIUM' ? 'Medium Risk' : 'Low Risk'}
+                  {riskLevel === 'HIGH' ? 'High Risk' : riskLevel === 'MEDIUM' ? 'Medium Risk' : 'Low Risk'}
                 </span>
               </div>
 
@@ -64,11 +174,15 @@ export const ScamCheckAlertCard: React.FC = () => {
                 <h4 className="text-[11px] font-semibold text-text/50 tracking-wider">
                   Evidence Analysis
                 </h4>
-                <ul className="list-disc list-outside ml-4 text-xs text-text/70 space-y-2 leading-relaxed">
-                  {item.flagged_reasons.map((reason, idx) => (
-                    <li key={idx}>{reason}</li>
-                  ))}
-                </ul>
+                {item.flagged_reasons && item.flagged_reasons.length > 0 ? (
+                  <ul className="list-disc list-outside ml-4 text-xs text-text/70 space-y-2 leading-relaxed">
+                    {item.flagged_reasons.map((reason, idx) => (
+                      <li key={idx}>{reason}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-xs text-text/60">No suspicious fraud indicators detected.</p>
+                )}
               </div>
 
               {/* Explanation Callout */}
@@ -81,7 +195,7 @@ export const ScamCheckAlertCard: React.FC = () => {
 
               {/* Card Actions */}
               <div className="pt-2 border-t border-accent/20 flex items-center justify-between text-xs">
-                {item.risk_level === 'HIGH' && (
+                {riskLevel === 'HIGH' && (
                   <>
                     <button
                       type="button"
@@ -97,7 +211,7 @@ export const ScamCheckAlertCard: React.FC = () => {
                     </button>
                   </>
                 )}
-                {item.risk_level === 'MEDIUM' && (
+                {riskLevel === 'MEDIUM' && (
                   <>
                     <button
                       type="button"
@@ -113,7 +227,7 @@ export const ScamCheckAlertCard: React.FC = () => {
                     </button>
                   </>
                 )}
-                {item.risk_level === 'LOW' && (
+                {riskLevel === 'LOW' && (
                   <button
                     type="button"
                     className="w-full py-1.5 text-center text-primary font-medium border border-primary/20 rounded hover:bg-primary/5 transition-colors"

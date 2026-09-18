@@ -69,6 +69,16 @@ export async function getGapReport(id: number) {
     return response.json();
 }
 
+export async function getAggregateGapReport() {
+    const response = await fetch(`${API_URL}/gap-report`);
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch aggregate gap report");
+    }
+
+    return response.json();
+}
+
 export async function generateGapReport(id: number) {
     const response = await fetch(`${API_URL}/applications/${id}/gap-report`, {
         method: "POST",

@@ -95,10 +95,16 @@ export interface ActivityEvent {
 }
 
 export interface PrepAnswerEvaluation {
-  question: string;
-  question_tags: string[];
-  student_answer: string;
+  question?: string;
+  question_tags?: string[];
+  student_answer?: string;
   keyword_coverage: number;
   feedback_text: string;
   flagged_as_weak: boolean;
+  recommended_resources?: Array<{
+    skill: string;
+    title: string;
+    url: string;
+  }>;
+  actionable_suggestions?: string[];
 }

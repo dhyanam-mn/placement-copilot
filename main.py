@@ -9,15 +9,39 @@ from fastapi.middleware.cors import CORSMiddleware
 # Ensure workspace root is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+from contextlib import asynccontextmanager
 from routers.applications import router as applications_router
+from routers.notifications import router as notifications_router
+from routers.profile import router as profile_router
+from routers.resources import router as resources_router
+from routers.skills import router as skills_router
+from routers.scam_patterns import router as scam_patterns_router
+from routers.watchlist import router as watchlist_router
+from routers.settings import router as settings_router
+from routers.health import router as health_router
 from routers.gmail import router as gmail_router
+from routers.admin import router as admin_router
+from routers.scheduler import router as scheduler_router
+from services.scheduler import start_scheduler, shutdown_scheduler
 
 logger = logging.getLogger("uvicorn.info")
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifecycle manager starting APScheduler on startup and shutting down on shutdown."""
+    logger.info("Starting Placement Copilot FastAPI application...")
+    start_scheduler()
+    yield
+    shutdown_scheduler()
+    logger.info("Placement Copilot FastAPI application shut down.")
+
+
 app = FastAPI(
     title="Placement Copilot Backend",
-    description="FastAPI Backend for Placement Copilot implementing API_CONTRACT.md",
+    description="FastAPI Backend for Placement Copilot implementing complete API contract, autonomous agents, and administration.",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # CORS middleware for Next.js frontend
@@ -70,12 +94,17 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 # Register routers
 app.include_router(applications_router)
+app.include_router(notifications_router)
+app.include_router(profile_router)
+app.include_router(resources_router)
+app.include_router(skills_router)
+app.include_router(scam_patterns_router)
+app.include_router(watchlist_router)
+app.include_router(settings_router)
+app.include_router(health_router)
 app.include_router(gmail_router)
-
-
-@app.get("/health")
-def backend_health():
-    return {"status": "ok", "service": "placement-copilot-backend"}
+app.include_router(admin_router)
+app.include_router(scheduler_router)
 
 
 if __name__ == "__main__":

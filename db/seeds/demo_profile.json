@@ -1,0 +1,22 @@
+{
+  "name": "Antigravity Candidate",
+  "email": "candidate@placementcopilot.ai",
+  "contact_info": "+1 (555) 019-2831 | GitHub: github.com/antigravity-candidate",
+  "projects": [
+    {
+      "project_name": "DronaMaps Drone Orthomosaic Pipeline",
+      "bullet_text": "Engineered drone orthomosaic object detection pipeline utilizing GeoTIFF raster processing, PyTorch, and CUDA.",
+      "skill_tags": ["Python", "PyTorch", "Computer Vision"]
+    },
+    {
+      "project_name": "FastAPI Microservices Backend",
+      "bullet_text": "Built async microservices REST backend with FastAPI, PostgreSQL, Docker containers, and redis caching.",
+      "skill_tags": ["FastAPI", "Python", "PostgreSQL", "Docker"]
+    },
+    {
+      "project_name": "Distributed System Design Primer",
+      "bullet_text": "Designed high-throughput event-driven microservices architecture using system design patterns.",
+      "skill_tags": ["System Design", "Docker", "PostgreSQL"]
+    }
+  ]
+}

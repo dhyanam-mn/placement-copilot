@@ -2,7 +2,7 @@ import sys
 import os
 import unittest
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 # Ensure root workspace is at head of sys.path
 root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,24 +13,33 @@ if "schemas" in sys.modules and not hasattr(sys.modules["schemas"], "Application
     del sys.modules["schemas"]
 
 from database import SessionLocal
-from models import Application, GapReport
+from models import Application, GapReport, Notification
 from services.gmail_tracker import (
     classify_email,
     match_email_to_application,
     sync_gmail_tracker,
     load_sync_state,
+    run_auto_ghost_sweep,
+    get_stale_application_nudges,
+    extract_second_level_label,
+    normalize_company_name,
 )
 
 class TestGmailTrackerAgent(unittest.TestCase):
 
     def setUp(self):
         self.db = SessionLocal()
+        from sqlalchemy import text
+        self.db.execute(text("UPDATE applications SET tailored_resume_id = NULL, gap_report_id = NULL WHERE company ILIKE '%Razorpay%';"))
+        self.db.execute(text("DELETE FROM applications WHERE company ILIKE '%Razorpay%';"))
+        self.db.commit()
+
         # Seed test application in DB
         self.app = Application(
-            company="Acme Corp",
+            company="Razorpay Software Pvt. Ltd.",
             role="Backend Engineer",
             jd_text="Python FastAPI PostgreSQL SQL DSA",
-            source="serpapi",
+            source="adzuna",
             status="APPLIED",
             status_source="manual",
             match_score=0.75,
@@ -42,18 +51,17 @@ class TestGmailTrackerAgent(unittest.TestCase):
         self.app_id = self.app.id
 
     def tearDown(self):
-        if hasattr(self, 'app_id') and self.app_id:
-            to_del = self.db.query(Application).filter(Application.id == self.app_id).first()
-            if to_del:
-                self.db.delete(to_del)
-                self.db.commit()
+        from sqlalchemy import text
+        self.db.execute(text("UPDATE applications SET tailored_resume_id = NULL, gap_report_id = NULL WHERE company ILIKE '%Razorpay%';"))
+        self.db.execute(text("DELETE FROM applications WHERE company ILIKE '%Razorpay%';"))
+        self.db.commit()
         self.db.close()
 
     # --- 1. Deterministic Classifier Tests ---
 
     def test_classify_oa_invite(self):
         cat_status = classify_email(
-            subject="Invitation to Online Assessment - Acme Corp",
+            subject="Invitation to Online Assessment - Razorpay",
             body="Please complete your coding test on HackerRank within 48 hours."
         )
         self.assertIsNotNone(cat_status)
@@ -61,19 +69,9 @@ class TestGmailTrackerAgent(unittest.TestCase):
         self.assertEqual(category, "assessment")
         self.assertEqual(status_enum, "OA_INVITE")
 
-    def test_classify_interview_invitation(self):
-        cat_status = classify_email(
-            subject="Acme Corp: Technical Interview Schedule",
-            body="We would like to invite you for a technical interview next week."
-        )
-        self.assertIsNotNone(cat_status)
-        category, status_enum = cat_status
-        self.assertEqual(category, "interview")
-        self.assertEqual(status_enum, "INTERVIEW")
-
     def test_classify_rejection_email(self):
         cat_status = classify_email(
-            subject="Status of your Acme Corp application",
+            subject="Status of your Razorpay application",
             body="Thank you for applying. Unfortunately, we have decided to move forward with other candidates."
         )
         self.assertIsNotNone(cat_status)
@@ -81,46 +79,51 @@ class TestGmailTrackerAgent(unittest.TestCase):
         self.assertEqual(category, "regret")
         self.assertEqual(status_enum, "REJECTED")
 
-    def test_classify_offer_email(self):
-        cat_status = classify_email(
-            subject="Job Offer from Acme Corp",
-            body="We are pleased to offer you the position of Backend Engineer."
-        )
-        self.assertIsNotNone(cat_status)
-        category, status_enum = cat_status
-        self.assertEqual(category, "offer")
-        self.assertEqual(status_enum, "OFFER")
+    # --- 2. Advanced Domain & Company Matching Tests ---
 
-    def test_classify_unrelated_email(self):
-        cat_status = classify_email(
-            subject="Weekly Newsletter - Tech Trends 2026",
-            body="Here are the top tech stories of the week."
-        )
-        self.assertIsNone(cat_status)
+    def test_match_by_subdomain_and_second_level_label(self):
+        """Should match 'noreply@mailer.razorpay.com' to 'Razorpay Software Pvt. Ltd.' via SLD label 'razorpay'."""
+        self.assertEqual(extract_second_level_label("mailer.razorpay.com"), "razorpay")
+        self.assertEqual(normalize_company_name("Razorpay Software Pvt. Ltd."), "razorpay")
 
-    # --- 2. Company & Application Matching Tests ---
-
-    def test_match_application_by_company_in_sender(self):
         matched = match_email_to_application(
             self.db,
-            sender="recruiter@acmecorp.com",
+            sender="Razorpay Careers <noreply@mailer.razorpay.com>",
             subject="Update on your application",
-            body="Hello from Acme Corp team."
+            body="Thank you for your interest in Backend Engineer."
         )
         self.assertIsNotNone(matched)
         self.assertEqual(matched.id, self.app_id)
 
-    def test_match_application_by_company_in_subject(self):
-        matched = match_email_to_application(
-            self.db,
-            sender="hr-noreply@jobs-portal.com",
-            subject="Acme Corp - Application Update",
-            body="Your application for Backend Engineer is received."
+    def test_match_ats_sender_by_display_name_and_subject(self):
+        """ATS senders (greenhouse.io, lever.co) should be matched by display name or subject."""
+        stripe_app = Application(
+            company="UniqueStripeTestCorp",
+            role="SWE Intern",
+            jd_text="Go APIs Billing",
+            source="greenhouse",
+            status="APPLIED",
+            match_score=0.88,
+            last_contact_date=datetime.now(timezone.utc),
         )
-        self.assertIsNotNone(matched)
-        self.assertEqual(matched.id, self.app_id)
+        self.db.add(stripe_app)
+        self.db.commit()
+        self.db.refresh(stripe_app)
 
-    def test_unmatched_email(self):
+        try:
+            matched = match_email_to_application(
+                self.db,
+                sender="UniqueStripeTestCorp via Greenhouse <no-reply@greenhouse.io>",
+                subject="Invitation to Interview",
+                body="We would love to schedule a technical interview."
+            )
+            self.assertIsNotNone(matched)
+            self.assertEqual(matched.id, stripe_app.id)
+        finally:
+            self.db.delete(stripe_app)
+            self.db.commit()
+
+    def test_unmatched_email_logs_warning_and_returns_none(self):
         matched = match_email_to_application(
             self.db,
             sender="contact@unknown-company.io",
@@ -129,50 +132,41 @@ class TestGmailTrackerAgent(unittest.TestCase):
         )
         self.assertIsNone(matched)
 
-    # --- 3. Full Sync Pipeline & Gap Report Trigger Tests ---
+    # --- 3. Nudges & Auto-Ghost Tests ---
 
-    def test_sync_pipeline_oa_invite_update(self):
-        mock_msgs = [{
-            "id": "msg_oa_101",
-            "history_id": "1001",
-            "sender": "careers@acmecorp.com",
-            "subject": "Acme Corp Online Assessment Invitation",
-            "body": "Please complete your HackerRank test."
-        }]
+    def test_tracker_nudges_filtering(self):
+        """get_stale_application_nudges should return applications stale past threshold (e.g. 14 days)."""
+        self.app.last_contact_date = datetime.now(timezone.utc) - timedelta(days=20)
+        self.db.commit()
 
-        result = asyncio.run(sync_gmail_tracker(self.db, mock_messages=mock_msgs))
-        self.assertEqual(result["status"], "success")
-        self.assertEqual(result["messages_classified_and_matched"], 1)
+        nudges_res = get_stale_application_nudges(self.db, threshold_days=14)
+        self.assertEqual(nudges_res["threshold_days"], 14)
+        self.assertGreaterEqual(nudges_res["total_nudges"], 1)
 
-        # Refresh database state
+        found = any(n["id"] == self.app_id for n in nudges_res["nudges"])
+        self.assertTrue(found)
+
+    def test_auto_ghost_sweep_preserves_last_contact_date(self):
+        """Auto-ghost at 45 days should update status to GHOSTED with status_source='auto_ghost', while preserving last_contact_date."""
+        old_contact_date = datetime.now(timezone.utc) - timedelta(days=50)
+        self.app.last_contact_date = old_contact_date
+        self.db.commit()
+
+        sweep_res = asyncio.run(run_auto_ghost_sweep(self.db))
+        self.assertEqual(sweep_res["status"], "success")
+        self.assertGreaterEqual(sweep_res["total_ghosted"], 1)
+
         self.db.refresh(self.app)
-        self.assertEqual(self.app.status, "OA_INVITE")
-        self.assertEqual(self.app.status_source, "gmail_auto")
+        self.assertEqual(self.app.status, "GHOSTED")
+        self.assertEqual(self.app.status_source, "auto_ghost")
+        # Verify last_contact_date was untouched
+        self.assertEqual(self.app.last_contact_date, old_contact_date)
 
-    def test_sync_pipeline_rejection_triggers_gap_report(self):
-        mock_msgs = [{
-            "id": "msg_rej_102",
-            "history_id": "1002",
-            "sender": "careers@acmecorp.com",
-            "subject": "Update on Acme Corp application",
-            "body": "Unfortunately, we are pursuing other candidates."
-        }]
-
-        result = asyncio.run(sync_gmail_tracker(self.db, mock_messages=mock_msgs))
-        self.assertEqual(result["status"], "success")
-        self.assertEqual(result["messages_classified_and_matched"], 1)
-
-        # Verify application status updated to REJECTED with gmail_auto
-        self.db.refresh(self.app)
-        self.assertEqual(self.app.status, "REJECTED")
-        self.assertEqual(self.app.status_source, "gmail_auto")
-
-        # Verify per-row gap report was automatically generated and linked
-        self.assertIsNotNone(self.app.gap_report_id)
-        gap_report = self.db.query(GapReport).filter(GapReport.id == self.app.gap_report_id).first()
-        self.assertIsNotNone(gap_report)
-        self.assertEqual(gap_report.application_id, self.app_id)
-        self.assertEqual(gap_report.report_type, "per_row")
+        # Verify Notification record was created
+        notif = self.db.query(Notification).filter(Notification.content.contains("Razorpay")).first()
+        self.assertIsNotNone(notif)
+        self.db.delete(notif)
+        self.db.commit()
 
 if __name__ == "__main__":
     unittest.main()

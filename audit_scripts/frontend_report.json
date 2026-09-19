@@ -1,0 +1,127 @@
+{
+  "pages_found": [
+    {
+      "route": "/",
+      "file": "frontend\\app\\page.tsx"
+    },
+    {
+      "route": "/admin",
+      "file": "frontend\\app\\admin\\page.tsx"
+    },
+    {
+      "route": "/applications/[id]",
+      "file": "frontend\\app\\applications\\[id]\\page.tsx"
+    },
+    {
+      "route": "/gap",
+      "file": "frontend\\app\\gap\\page.tsx"
+    },
+    {
+      "route": "/notifications",
+      "file": "frontend\\app\\notifications\\page.tsx"
+    },
+    {
+      "route": "/prep",
+      "file": "frontend\\app\\prep\\page.tsx"
+    },
+    {
+      "route": "/profile",
+      "file": "frontend\\app\\profile\\page.tsx"
+    },
+    {
+      "route": "/scout",
+      "file": "frontend\\app\\scout\\page.tsx"
+    },
+    {
+      "route": "/tracker",
+      "file": "frontend\\app\\tracker\\page.tsx"
+    }
+  ],
+  "components_found": [
+    "GapReportView.tsx",
+    "HealthBanner.tsx",
+    "KanbanBoard.tsx",
+    "ResumeTailoringView.tsx",
+    "ScamCheckAlertCard.tsx",
+    "Sidebar.tsx"
+  ],
+  "required_pages_audit": {
+    "dashboard_timeline": true,
+    "scout": true,
+    "job_detail": true,
+    "tracker": true,
+    "notifications": false,
+    "gap": true,
+    "prep": false,
+    "profile_import": true,
+    "admin_resources_skills_scam": true
+  },
+  "page_details": {
+    "/": {
+      "file": "frontend\\app\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": [
+        "frontend\\components\\KanbanBoard.tsx"
+      ]
+    },
+    "/admin": {
+      "file": "frontend\\app\\admin\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": []
+    },
+    "/applications/[id]": {
+      "file": "frontend\\app\\applications\\[id]\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": [
+        "frontend\\components\\ResumeTailoringView.tsx"
+      ]
+    },
+    "/gap": {
+      "file": "frontend\\app\\gap\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": []
+    },
+    "/notifications": {
+      "file": "frontend\\app\\notifications\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": []
+    },
+    "/prep": {
+      "file": "frontend\\app\\prep\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": []
+    },
+    "/profile": {
+      "file": "frontend\\app\\profile\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": []
+    },
+    "/scout": {
+      "file": "frontend\\app\\scout\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": []
+    },
+    "/tracker": {
+      "file": "frontend\\app\\tracker\\page.tsx",
+      "has_loading_state": true,
+      "has_error_state": true,
+      "rendered_components": []
+    }
+  },
+  "mock_findings_count": 1,
+  "mock_findings": [
+    {
+      "file": "frontend\\components\\ResumeTailoringView.tsx",
+      "line": 43,
+      "snippet": "'Documented API endpoints and provided code samples for the developer community.',"
+    }
+  ]
+}

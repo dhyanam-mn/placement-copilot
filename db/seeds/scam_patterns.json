@@ -1,0 +1,50 @@
+[
+  {
+    "category": "public_domain",
+    "pattern": "gmail.com",
+    "weight": 0.35,
+    "source_note": "Public email domain used for official corporate hiring outreach"
+  },
+  {
+    "category": "public_domain",
+    "pattern": "yahoo.com",
+    "weight": 0.35,
+    "source_note": "Public Yahoo email domain used for corporate recruitment"
+  },
+  {
+    "category": "public_domain",
+    "pattern": "hotmail.com",
+    "weight": 0.35,
+    "source_note": "Public Hotmail domain used for recruitment"
+  },
+  {
+    "category": "lookalike",
+    "pattern": "-careers",
+    "weight": 0.5,
+    "source_note": "Fake lookalike domain with -careers suffix"
+  },
+  {
+    "category": "lookalike",
+    "pattern": "-jobs",
+    "weight": 0.5,
+    "source_note": "Fake lookalike domain with -jobs suffix"
+  },
+  {
+    "category": "payment_demand",
+    "pattern": "processing fee",
+    "weight": 0.6,
+    "source_note": "Demands upfront processing fee before interview or offer"
+  },
+  {
+    "category": "payment_demand",
+    "pattern": "security deposit",
+    "weight": 0.6,
+    "source_note": "Demands security deposit for training or hardware"
+  },
+  {
+    "category": "unofficial_channel",
+    "pattern": "telegram",
+    "weight": 0.25,
+    "source_note": "Recruitment conducted exclusively via Telegram channel"
+  }
+]

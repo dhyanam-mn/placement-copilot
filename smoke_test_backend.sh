@@ -283,7 +283,7 @@ assert 'status' in data
 "
 
 # 4. POST /applications (Scout Agent Entry)
-CREATE_PAYLOAD='{"company": "Innovaccer Test", "role": "SDE-1", "jd_text": "Strong DSA fundamentals, system design basics, SQL", "source": "serpapi"}'
+CREATE_PAYLOAD='{"company": "Innovaccer Test", "role": "SDE-1", "jd_text": "Strong DSA fundamentals, system design basics, SQL", "source": "adzuna"}'
 run_test "Create Application / Scout Embed Match (POST /applications)" "POST" "/applications" "$CREATE_PAYLOAD" "
 assert 'id' in data
 assert data['company'] == 'Innovaccer Test'
@@ -337,12 +337,10 @@ assert isinstance(data.get('risk_score'), (int, float))
 assert isinstance(data.get('flagged_reasons'), list)
 "
 
-# 11. POST /applications/{id}/prep/evaluate-answer
-PREP_PAYLOAD='{"question": "Walk me through hard-negative mining.", "student_answer": "I used sliding window tiling and confidence thresholding.", "question_tags": ["hard negative mining", "sliding window tiling"]}'
-run_test "Prep Evaluate Answer (POST /applications/1/prep/evaluate-answer)" "POST" "/applications/1/prep/evaluate-answer" "$PREP_PAYLOAD" "
-assert isinstance(data.get('keyword_coverage'), (int, float))
-assert isinstance(data.get('flagged_as_weak'), bool)
-assert isinstance(data.get('feedback_text'), str)
+# 11. GET /applications/{id}/prep
+run_test "Prep Recommendations (GET /applications/1/prep)" "GET" "/applications/1/prep" "" "
+assert data.get('application_id') == 1
+assert isinstance(data.get('recommendations'), list)
 "
 
 # 12. Error Test: 404 Not Found

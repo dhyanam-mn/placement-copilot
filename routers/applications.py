@@ -1,25 +1,30 @@
-from typing import Optional
+import logging
+from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 import numpy as np
 
+logger = logging.getLogger("placement_copilot.applications")
+
 from database import get_db
-from models import Application, GapReport
+from models import Application, GapReport, StatusEvent, ScamCheck
 from schemas import (
     ApplicationCreateRequest,
     ApplicationListResponse,
     ApplicationResponse,
     ApplicationStatusPatchRequest,
     GapReportResponse,
-    PrepEvaluateRequest,
-    PrepEvaluateResponse,
+    PrepResponse,
+    PrepRecommendationItem,
     ScamCheckRequest,
     ScamCheckResponse,
+    StatusEventListResponse,
+    StatusEventResponse,
     TailorResponse,
 )
 from services.model_service_client import (
     call_embed,
-    call_prep_evaluate_answer,
     ModelServiceUnavailableError,
 )
 from services.tailoring import tailor_resume_for_application, _load_base_resume
@@ -47,6 +52,8 @@ def _cosine_similarity(v1: list, v2: list) -> float:
 @router.get("/applications", response_model=ApplicationListResponse)
 def get_applications(
     status: Optional[str] = Query(None, description="Filter by application status"),
+    source: Optional[str] = Query(None, description="Filter by job source"),
+    is_demo: Optional[bool] = Query(None, description="Filter by demo flag"),
     db: Session = Depends(get_db),
 ):
     query = db.query(Application)
@@ -61,6 +68,10 @@ def get_applications(
                 detail={"error": "validation_error", "detail": f"Invalid status '{status}'"},
             )
         query = query.filter(Application.status == status)
+    if source:
+        query = query.filter(Application.source == source)
+    if is_demo is not None:
+        query = query.filter(Application.is_demo == is_demo)
 
     apps = query.order_by(Application.id.asc()).all()
     return ApplicationListResponse(applications=apps)
@@ -78,16 +89,47 @@ def get_application_by_id(id: int, db: Session = Depends(get_db)):
     return app
 
 
+# --- 2b. GET /applications/{id}/events ---
+@router.get("/applications/{id}/events", response_model=StatusEventListResponse)
+def get_application_events(id: int, db: Session = Depends(get_db)):
+    """Retrieve history of status transition events for a given application ID."""
+    app = db.query(Application).filter(Application.id == id).first()
+    if not app:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "not_found", "detail": f"application id {id} does not exist"},
+        )
+    events = (
+        db.query(StatusEvent)
+        .filter(StatusEvent.application_id == id)
+        .order_by(StatusEvent.created_at.asc())
+        .all()
+    )
+    return StatusEventListResponse(events=events)
+
+
 async def process_and_create_application(
     payload: ApplicationCreateRequest, db: Session
 ) -> Application:
     """Core logic to embed JD against base resume bullets, calculate match score, and store application."""
-    base_bullets = _load_base_resume()
+    # Check if application already exists in DB (ON CONFLICT DO NOTHING semantics)
+    existing = (
+        db.query(Application)
+        .filter(
+            func.lower(Application.company) == payload.company.lower().strip(),
+            func.lower(Application.role) == payload.role.lower().strip(),
+            Application.source == payload.source,
+        )
+        .first()
+    )
+    if existing:
+        return existing
+
+    base_bullets = _load_base_resume(db)
     sample_bullets = [b["bullet"] for b in base_bullets]
 
     texts_to_embed = [payload.jd_text] + sample_bullets
 
-    # Calls model-service /embed at localhost:8001
     try:
         embed_data = await call_embed(texts_to_embed)
         embeddings = embed_data.get("embeddings", [])
@@ -115,6 +157,14 @@ async def process_and_create_application(
     db.commit()
     db.refresh(new_app)
 
+    # Launch LangGraph orchestrator workflow for new application
+    from services.orchestrator import run_application_workflow
+    try:
+        await run_application_workflow(db, new_app)
+        db.refresh(new_app)
+    except Exception as exc:
+        logger.warning(f"Orchestrator initial workflow encountered error for App ID {new_app.id}: {exc}")
+
     return new_app
 
 
@@ -124,13 +174,33 @@ async def create_application(payload: ApplicationCreateRequest, db: Session = De
     return await process_and_create_application(payload, db)
 
 
-# --- 3b. POST /scout/sync ---
+# --- 3b. POST /applications/{id}/confirm-applied ---
+@router.post("/applications/{id}/confirm-applied", response_model=ApplicationResponse)
+async def confirm_application_submission(id: int, db: Session = Depends(get_db)):
+    """
+    Student/User confirms submission of job application.
+    Transitions status to APPLIED and resumes LangGraph orchestrator past READY_TO_APPLY checkpoint.
+    """
+    app = db.query(Application).filter(Application.id == id).first()
+    if not app:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "not_found", "detail": f"application id {id} does not exist"},
+        )
+
+    from services.orchestrator import confirm_application_applied
+    await confirm_application_applied(db, app.id)
+    db.refresh(app)
+    return app
+
+
+# --- 3c. POST /scout/sync ---
 @router.post("/scout/sync")
 async def trigger_scout_job_sourcing(
     dry_run: bool = Query(False, description="Set true to preview jobs without saving to DB"),
     db: Session = Depends(get_db),
 ):
-    """Trigger Scout Agent live job sourcing from SerpAPI and Unstop."""
+    """Trigger Scout Agent live job sourcing from Adzuna, Greenhouse, Lever, and Unstop."""
     from services.job_sourcing import run_job_sourcing
     result = await run_job_sourcing(db, dry_run=dry_run)
     return result
@@ -141,31 +211,20 @@ async def trigger_scout_job_sourcing(
 async def update_application_status(
     id: int, payload: ApplicationStatusPatchRequest, db: Session = Depends(get_db)
 ):
-    app = db.query(Application).filter(Application.id == id).first()
-    if not app:
+    from services.status_service import set_status
+    try:
+        updated_app = await set_status(
+            db,
+            application_id=id,
+            new_status=payload.status,
+            source=payload.status_source or "manual"
+        )
+        return updated_app
+    except ValueError as err:
         raise HTTPException(
             status_code=404,
-            detail={"error": "not_found", "detail": f"application id {id} does not exist"},
+            detail={"error": "not_found", "detail": str(err)},
         )
-
-    app.status = payload.status
-    if payload.status_source:
-        app.status_source = payload.status_source
-
-    # Update last_contact_date for real signals (manual, gmail_auto),
-    # but DO NOT touch last_contact_date for auto_ghost (which is the absence of a signal).
-    if payload.status_source != "auto_ghost":
-        from datetime import datetime, timezone
-        app.last_contact_date = datetime.now(timezone.utc)
-    db.commit()
-    db.refresh(app)
-
-    # Automatic Gap Report Trigger if status becomes GHOSTED or REJECTED
-    if payload.status in ("GHOSTED", "REJECTED"):
-        await generate_per_row_gap_report(db, app)
-        db.refresh(app)
-
-    return app
 
 
 # --- 5. POST /applications/{id}/tailor ---
@@ -227,7 +286,33 @@ async def get_aggregate_gap_report(db: Session = Depends(get_db)):
     return gap_report
 
 
-# --- 9. POST /applications/{id}/scam-check ---
+# --- 9. GET /applications/{id}/scam-check ---
+@router.get("/applications/{id}/scam-check", response_model=ScamCheckResponse)
+def get_application_stored_scam_check(id: int, db: Session = Depends(get_db)):
+    """Retrieve latest stored scam-check evaluation & evidence for a given application ID."""
+    app = db.query(Application).filter(Application.id == id).first()
+    if not app:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "not_found", "detail": f"application id {id} does not exist"},
+        )
+
+    scam_record = (
+        db.query(ScamCheck)
+        .filter(ScamCheck.application_id == id)
+        .order_by(ScamCheck.created_at.desc())
+        .first()
+    )
+    if not scam_record:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "not_found", "detail": f"scam check record for application id {id} does not exist"},
+        )
+
+    return scam_record
+
+
+# --- 9b. POST /applications/{id}/scam-check ---
 @router.post("/applications/{id}/scam-check", response_model=ScamCheckResponse)
 async def run_application_scam_check(
     id: int, payload: ScamCheckRequest, db: Session = Depends(get_db)
@@ -245,20 +330,29 @@ async def run_application_scam_check(
     return scam_record
 
 
-# --- 10. POST /applications/{id}/prep/evaluate-answer ---
-@router.post("/applications/{id}/prep/evaluate-answer", response_model=PrepEvaluateResponse)
-async def evaluate_prep_answer(
-    id: int, payload: PrepEvaluateRequest, db: Session = Depends(get_db)
-):
+# --- 10. GET /applications/{id}/prep ---
+@router.get("/applications/{id}/prep")
+def get_application_prep(id: int, db: Session = Depends(get_db)):
     app = db.query(Application).filter(Application.id == id).first()
     if not app:
         raise HTTPException(
             status_code=404,
             detail={"error": "not_found", "detail": f"application id {id} does not exist"},
         )
+    from services.prep_agent import get_application_prep_recommendations
+    recs = get_application_prep_recommendations(db, id)
+    return {"application_id": id, "recommendations": recs}
 
-    # Pass straight through to model-service /prep/evaluate-answer
-    result = await call_prep_evaluate_answer(
-        payload.question, payload.student_answer, payload.question_tags
-    )
-    return result
+
+# --- 10b. POST /applications/{id}/prep ---
+@router.post("/applications/{id}/prep")
+async def generate_application_prep(id: int, db: Session = Depends(get_db)):
+    app = db.query(Application).filter(Application.id == id).first()
+    if not app:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "not_found", "detail": f"application id {id} does not exist"},
+        )
+    from services.prep_agent import generate_prep_recommendations
+    recs = await generate_prep_recommendations(db, app)
+    return {"application_id": id, "recommendations": recs}

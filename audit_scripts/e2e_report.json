@@ -1,0 +1,209 @@
+{
+  "1_discover": {
+    "status": "PASS",
+    "http_code": 201,
+    "response": {
+      "id": 2295,
+      "company": "AuditTest Corp",
+      "role": "Audit Test Engineer",
+      "source": "unstop",
+      "status": "READY_TO_APPLY",
+      "status_source": "manual",
+      "match_score": 0.31,
+      "tailored_resume_id": 1718,
+      "gap_report_id": null,
+      "last_contact_date": "2026-09-19T06:35:09.705431+05:30",
+      "last_updated": "2026-09-19T06:35:09.689771+05:30",
+      "created_at": "2026-09-19T06:35:06.301207+05:30",
+      "is_demo": false
+    },
+    "time_sec": 3.453
+  },
+  "2_scam_check": {
+    "status": "PASS",
+    "http_code": 200,
+    "response": {
+      "id": 204,
+      "application_id": 2295,
+      "recruiter_name": "Audit Recruiter",
+      "recruiter_domain": "audittestcorp.com",
+      "risk_score": 0.4,
+      "flagged_reasons": [
+        "sender domain 'audittestcorp.com' does not match claimed company 'AuditTest Corp'"
+      ],
+      "explanation_text": "This looks risky: sender domain 'audittestcorp.com' does not match claimed company 'AuditTest Corp'. Exercise caution before proceeding with AuditTest Corp.",
+      "created_at": "2026-09-19T06:35:09.750303+05:30",
+      "is_demo": false
+    },
+    "time_sec": 5.338
+  },
+  "3_tailor": {
+    "status": "PASS",
+    "http_code": 200,
+    "response": {
+      "tailored_resume_id": 1719,
+      "resume_data": {
+        "ordered_bullets": [
+          {
+            "project": "Imported Microservice",
+            "bullet": "Architected distributed service",
+            "score": 0.5
+          }
+        ]
+      }
+    },
+    "time_sec": 0.08
+  },
+  "4_confirm_applied": {
+    "status": "PASS",
+    "http_code": 200,
+    "response": {
+      "id": 2295,
+      "company": "AuditTest Corp",
+      "role": "Audit Test Engineer",
+      "source": "unstop",
+      "status": "APPLIED",
+      "status_source": "manual",
+      "match_score": 0.31,
+      "tailored_resume_id": 1719,
+      "gap_report_id": null,
+      "last_contact_date": "2026-09-19T06:35:15.176144+05:30",
+      "last_updated": "2026-09-19T06:35:15.166300+05:30",
+      "created_at": "2026-09-19T06:35:06.301207+05:30",
+      "is_demo": false
+    },
+    "time_sec": 0.201
+  },
+  "5_gmail_signal": {
+    "status": "PASS",
+    "http_code": 200,
+    "response": {
+      "id": 2295,
+      "company": "AuditTest Corp",
+      "role": "Audit Test Engineer",
+      "source": "unstop",
+      "status": "INTERVIEW",
+      "status_source": "gmail_auto",
+      "match_score": 0.31,
+      "tailored_resume_id": 1719,
+      "gap_report_id": null,
+      "last_contact_date": "2026-09-19T06:35:15.371476+05:30",
+      "last_updated": "2026-09-19T06:35:15.367912+05:30",
+      "created_at": "2026-09-19T06:35:06.301207+05:30",
+      "is_demo": false
+    },
+    "time_sec": 5.212
+  },
+  "6_auto_ghost": {
+    "status": "PASS",
+    "backdate_resp": {
+      "status": "success",
+      "message": "Backdated application ID 2295 by 46 days",
+      "application_id": 2295,
+      "company": "AuditTest Corp",
+      "role": "Audit Test Engineer",
+      "last_contact_date": "2026-08-04T06:35:20.585094+05:30"
+    },
+    "auto_ghost_resp": {
+      "status": "success",
+      "total_stale_checked": 846,
+      "total_ghosted": 1,
+      "ghosted_applications": [
+        {
+          "id": 2295,
+          "company": "AuditTest Corp",
+          "role": "Audit Test Engineer",
+          "status": "GHOSTED",
+          "status_source": "auto_ghost",
+          "days_inactive": 46,
+          "last_contact_date": "2026-08-04T06:35:20.585094+05:30"
+        }
+      ]
+    },
+    "time_sec": 9.102
+  },
+  "7_gap_report": {
+    "status": "PASS",
+    "http_code": 200,
+    "response": {
+      "id": 96,
+      "application_id": 2295,
+      "report_type": "per_row",
+      "summary_text": "JD required SQL, Python, FastAPI, python, sql, PostgreSQL \u2014 not present in the matched resume skills for this application.",
+      "details": {
+        "matched_skills": [
+          "Docker"
+        ],
+        "missing_skills": [
+          "SQL",
+          "Python",
+          "FastAPI",
+          "python",
+          "sql",
+          "PostgreSQL"
+        ],
+        "jd_required_skills": [
+          "SQL",
+          "Python",
+          "FastAPI",
+          "python",
+          "sql",
+          "Docker",
+          "PostgreSQL"
+        ]
+      },
+      "created_at": "2026-09-19T06:35:21.303268+05:30"
+    },
+    "time_sec": 0.019
+  },
+  "8_prep_recommendation": {
+    "status": "PASS",
+    "http_code": 200,
+    "response": {
+      "application_id": 2295,
+      "recommendations": [
+        {
+          "id": 44,
+          "application_id": 2295,
+          "resource_id": 168,
+          "title": "FastAPI Complete Documentation",
+          "url": "https://fastapi.tiangolo.com/",
+          "reason": "Recommended resource for mastering FastAPI, Python based on your job description requirements.",
+          "est_hours": 3,
+          "created_at": "2026-09-19T06:35:20.471007+05:30"
+        },
+        {
+          "id": 45,
+          "application_id": 2295,
+          "resource_id": 1,
+          "title": "Resource for python",
+          "url": "https://realpython.com/",
+          "reason": "Recommended resource for mastering python based on your job description requirements.",
+          "est_hours": 3,
+          "created_at": "2026-09-19T06:35:20.471007+05:30"
+        },
+        {
+          "id": 46,
+          "application_id": 2295,
+          "resource_id": 2,
+          "title": "Resource for python",
+          "url": "https://docs.python.org/3/tutorial/",
+          "reason": "Recommended resource for mastering python based on your job description requirements.",
+          "est_hours": 3,
+          "created_at": "2026-09-19T06:35:20.471007+05:30"
+        },
+        {
+          "id": 47,
+          "application_id": 2295,
+          "resource_id": 7,
+          "title": "Resource for sql",
+          "url": "https://mode.com/sql-tutorial/",
+          "reason": "Recommended resource for mastering sql based on your job description requirements.",
+          "est_hours": 3,
+          "created_at": "2026-09-19T06:35:20.471007+05:30"
+        }
+      ]
+    },
+    "time_sec": 0.031
+  }
+}

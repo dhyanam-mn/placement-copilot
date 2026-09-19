@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Application } from '@/types';
-import { getApplication, tailorResume } from '@/lib/api';
-import { Download, Check } from 'lucide-react';
+import { getApplication, tailorResume, updateApplicationStatus } from '@/lib/api';
+import { Download, Check, Loader2 } from 'lucide-react';
 
 interface ResumeTailoringViewProps {
   applicationId?: number;
@@ -67,6 +67,23 @@ export const ResumeTailoringView: React.FC<ResumeTailoringViewProps> = ({
   const [tailorData, setTailorData] = useState<TailorResponseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isApplying, setIsApplying] = useState(false);
+
+  const handleApply = async () => {
+    try {
+      setIsApplying(true);
+      await updateApplicationStatus(applicationId, 'APPLIED', 'manual');
+      // Update local state to reflect the change
+      if (application) {
+        setApplication({ ...application, status: 'APPLIED' });
+      }
+      alert('Successfully marked as APPLIED!');
+    } catch (err: any) {
+      alert(`Failed to update status: ${err.message}`);
+    } finally {
+      setIsApplying(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -149,10 +166,14 @@ export const ResumeTailoringView: React.FC<ResumeTailoringViewProps> = ({
           </button>
           <button
             type="button"
-            className="inline-flex items-center space-x-2 px-4 py-2 text-xs font-medium text-white bg-primary rounded hover:bg-primary/90 transition-colors"
+            onClick={handleApply}
+            disabled={isApplying || application?.status === 'APPLIED'}
+            className="inline-flex items-center space-x-2 px-4 py-2 text-xs font-medium text-white bg-primary rounded hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Check className="w-3.5 h-3.5" />
-            <span>Apply with Tailored Resume</span>
+            {isApplying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+            <span>
+              {application?.status === 'APPLIED' ? 'Applied' : 'Apply with Tailored Resume'}
+            </span>
           </button>
         </div>
       </div>

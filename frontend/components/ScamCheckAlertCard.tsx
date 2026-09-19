@@ -12,7 +12,7 @@ interface ScamCheckItem {
   id: number;
   risk_score: number;
   flagged_reasons: string[];
-  explanation_text: string | null;
+  explanation_text?: string | null;
   recruiter_name: string;
   claimed_company: string;
   recruiter_domain: string;

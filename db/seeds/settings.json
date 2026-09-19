@@ -1,0 +1,22 @@
+[
+  {
+    "key": "nudge_threshold_days",
+    "value": 14
+  },
+  {
+    "key": "auto_ghost_threshold_days",
+    "value": 45
+  },
+  {
+    "key": "scout_sync_interval_hours",
+    "value": 6
+  },
+  {
+    "key": "gmail_sync_interval_hours",
+    "value": 24
+  },
+  {
+    "key": "gap_aggregate_interval_days",
+    "value": 7
+  }
+]

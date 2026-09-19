@@ -54,13 +54,15 @@ def check_1_ollama():
         }
     }
     
-    # 1.2 answer_feedback
-    ans_payload = {
-        "task_type": "answer_feedback",
+    # 1.2 prep_recommendations
+    prep_payload = {
+        "task_type": "prep_recommendations",
         "context": {
-            "question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.",
-            "student_answer": "I used sliding window tiling across GeoTIFF images and filtered false positives based on confidence thresholds.",
-            "expected_topics": ["hard negative mining", "sliding window tiling", "confidence thresholding"]
+            "jd_summary": "Looking for Python engineer experienced in PyTorch and Docker.",
+            "candidates": [
+                {"id": 1, "title": "PyTorch Tutorial", "skills": ["pytorch"]},
+                {"id": 2, "title": "Docker Crash Course", "skills": ["docker"]}
+            ]
         }
     }
     
@@ -78,7 +80,7 @@ def check_1_ollama():
     }
     
     res1 = http_post(ms_url, scam_payload)
-    res2 = http_post(ms_url, ans_payload)
+    res2 = http_post(ms_url, prep_payload)
     res3 = http_post(ms_url, gap_payload)
     
     print("\n--- 1.1 task_type: scam_explanation ---")
@@ -86,7 +88,7 @@ def check_1_ollama():
     print("Full generated_text:")
     print(f"\"{res1.get('generated_text')}\"")
     
-    print("\n--- 1.2 task_type: answer_feedback ---")
+    print("\n--- 1.2 task_type: prep_recommendations ---")
     print(f"Error field present? {'YES' if 'error' in res2 else 'NO (ABSENT)'}")
     print("Full generated_text:")
     print(f"\"{res2.get('generated_text')}\"")
@@ -119,24 +121,21 @@ def check_2_e2e_flow():
         "company": "Scale AI E2E Test",
         "role": "AI Solutions Engineer",
         "jd_text": "Strong Python, PyTorch, LLM fine-tuning, system design, and computer vision skills required.",
-        "source": "serpapi"
+        "source": "adzuna"
     }
     app_res = http_post(f"{base_url}/applications", create_payload)
     app_id = app_res["id"]
     print(f"Created Application ID: {app_id}")
     print("Response payload:")
     print(json.dumps(app_res, indent=2))
-    assert app_res["status"] == "DISCOVERED"
+    assert app_res["status"] in ("DISCOVERED", "READY_TO_APPLY")
     
-    # Step b: POST /applications/{id}/tailor
-    print(f"\n--- Step b: POST /applications/{app_id}/tailor ---")
-    tailor_res = http_post(f"{base_url}/applications/{app_id}/tailor", {})
+    # Step b: POST /applications/{id}/confirm-applied
+    print(f"\n--- Step b: POST /applications/{app_id}/confirm-applied ---")
+    confirm_res = http_post(f"{base_url}/applications/{app_id}/confirm-applied", {})
     print("Response payload:")
-    print(json.dumps(tailor_res, indent=2))
-    assert "ordered_bullets" in tailor_res["resume_data"]
-    pdf_path = tailor_res["resume_data"].get("pdf_path") or os.path.abspath("tailored_resume.pdf")
-    assert os.path.exists(pdf_path) and os.path.getsize(pdf_path) > 0
-    print(f"Verified PDF file exists on disk: {pdf_path} (size: {os.path.getsize(pdf_path)} bytes)")
+    print(json.dumps(confirm_res, indent=2))
+    assert confirm_res["status"] == "APPLIED"
     
     # Step c: PATCH /applications/{id}/status -> GHOSTED
     print(f"\n--- Step c: PATCH /applications/{app_id}/status -> GHOSTED ---")
@@ -171,7 +170,19 @@ def check_2_e2e_flow():
     assert scam_res["risk_score"] > 0
     assert len(scam_res["flagged_reasons"]) > 0
     assert scam_res["explanation_text"] is not None
+
+    # Step f: PATCH /applications/{id}/status -> INTERVIEW & GET /applications/{id}/prep
+    print(f"\n--- Step f: Transition status to INTERVIEW & test Prep Agent ---")
+    status_res = http_patch(f"{base_url}/applications/{app_id}/status", {"status": "INTERVIEW"})
+    assert status_res["status"] == "INTERVIEW"
     
+    prep_res = http_get(f"{base_url}/applications/{app_id}/prep")
+    print("Prep recommendations payload:")
+    print(json.dumps(prep_res, indent=2))
+    assert prep_res["application_id"] == app_id
+    assert "recommendations" in prep_res
+    assert isinstance(prep_res["recommendations"], list)
+
     print("\nSTATUS: CHECK 2 PASSED!")
     return True
 

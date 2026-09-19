@@ -31,6 +31,7 @@ class ApplicationResponse(BaseModel):
     last_contact_date: datetime
     last_updated: datetime
     created_at: datetime
+    is_demo: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -43,12 +44,47 @@ class ApplicationCreateRequest(BaseModel):
     company: str
     role: str
     jd_text: str
-    source: Literal['serpapi', 'unstop']
+    source: Literal['adzuna', 'greenhouse', 'lever', 'unstop']
 
 
 class ApplicationStatusPatchRequest(BaseModel):
     status: ApplicationStatus
     status_source: Optional[StatusSourceType] = None
+
+
+# --- Status Event Schemas ---
+
+class StatusEventResponse(BaseModel):
+    id: int
+    application_id: int
+    old_status: Optional[str] = None
+    new_status: str
+    event_source: Optional[str] = None
+    created_at: datetime
+    is_demo: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StatusEventListResponse(BaseModel):
+    events: List[StatusEventResponse]
+
+
+# --- Notification Schemas ---
+
+class NotificationResponse(BaseModel):
+    id: int
+    type: str
+    content: str
+    read: bool
+    created_at: datetime
+    is_demo: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class NotificationListResponse(BaseModel):
+    notifications: List[NotificationResponse]
 
 
 # --- Tailoring Schemas ---
@@ -91,33 +127,189 @@ class ScamCheckRequest(BaseModel):
 
 class ScamCheckResponse(BaseModel):
     id: int
+    application_id: Optional[int] = None
+    recruiter_name: Optional[str] = None
+    recruiter_domain: Optional[str] = None
     risk_score: float
     flagged_reasons: List[str]
     explanation_text: Optional[str] = None
+    created_at: datetime
+    is_demo: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 
 
 # --- Prep Schemas ---
 
-class PrepEvaluateRequest(BaseModel):
-    question: str
-    student_answer: str
-    question_tags: List[str]
-
-
-class ResourceItem(BaseModel):
-    skill: str
+class PrepRecommendationItem(BaseModel):
+    id: int
+    application_id: int
+    resource_id: int
     title: str
     url: str
+    reason: str
+    est_hours: Optional[int] = 3
+    created_at: Optional[str] = None
 
 
-class PrepEvaluateResponse(BaseModel):
-    keyword_coverage: float
-    feedback_text: str
-    flagged_as_weak: bool
-    recommended_resources: Optional[List[ResourceItem]] = None
-    actionable_suggestions: Optional[List[str]] = None
+class PrepResponse(BaseModel):
+    application_id: int
+    recommendations: List[PrepRecommendationItem]
+
+
+# --- Profile & Project Schemas ---
+
+class ProfileProjectCreateRequest(BaseModel):
+    project_name: str
+    bullet_text: str
+    skill_tags: Optional[List[str]] = None
+
+
+class ProfileProjectResponse(BaseModel):
+    id: int
+    profile_id: int
+    project_name: str
+    bullet_text: str
+    skill_tags: Optional[List[str]] = None
+    created_at: datetime
+    is_demo: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ProfileCreateRequest(BaseModel):
+    name: str
+    email: Optional[str] = None
+    contact_info: Optional[str] = None
+
+
+class ProfileResponse(BaseModel):
+    id: int
+    name: str
+    email: Optional[str] = None
+    contact_info: Optional[str] = None
+    created_at: datetime
+    is_demo: bool = False
+    projects: List[ProfileProjectResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ProfileImportRequest(BaseModel):
+    name: str
+    email: Optional[str] = None
+    contact_info: Optional[str] = None
+    projects: List[ProfileProjectCreateRequest] = []
+
+
+# --- Resource & Skill Schemas ---
+
+class ResourceSkillLink(BaseModel):
+    skill_name: str
+    weight: float = 1.0
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ResourceCreateRequest(BaseModel):
+    title: str
+    url: str
+    is_active: bool = True
+    skills: Optional[List[ResourceSkillLink]] = []
+
+
+class ResourceResponse(BaseModel):
+    id: int
+    title: str
+    url: str
+    is_active: bool
+    verified_at: Optional[datetime] = None
+    created_at: datetime
+    is_demo: bool = False
+    skills: List[ResourceSkillLink] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SkillCreateRequest(BaseModel):
+    name: str
+    category: Optional[str] = None
+    aliases: Optional[List[str]] = []
+
+
+class SkillResponse(BaseModel):
+    id: int
+    name: str
+    category: Optional[str] = None
+    aliases: Optional[List[str]] = None
+    created_at: datetime
+    is_demo: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Scam Pattern Schemas ---
+
+class ScamPatternCreateRequest(BaseModel):
+    category: str
+    pattern: str
+    weight: float
+    source_note: str = 'TODO'
+
+
+class ScamPatternResponse(BaseModel):
+    id: int
+    category: str
+    pattern: str
+    weight: float
+    source_note: str
+    created_at: datetime
+    is_demo: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Watchlist Schemas ---
+
+class WatchlistCreateRequest(BaseModel):
+    company: str
+    ats: Optional[str] = None
+    token: Optional[str] = None
+    active: bool = True
+
+
+class WatchlistResponse(BaseModel):
+    id: int
+    company: str
+    ats: Optional[str] = None
+    token: Optional[str] = None
+    active: bool
+    created_at: datetime
+    is_demo: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Setting Schemas ---
+
+class SettingCreateRequest(BaseModel):
+    key: str
+    value: Any
+
+
+class SettingResponse(BaseModel):
+    key: str
+    value: Any
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Health Schema ---
+
+class HealthStatusResponse(BaseModel):
+    status: str
+    services: Dict[str, str]
 
 
 # --- Standard Error Schema ---

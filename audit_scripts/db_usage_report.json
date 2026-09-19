@@ -1,0 +1,15 @@
+{
+  "scam_check_db_read": false,
+  "gmail_tracker_state_storage": "gmail_sync_state.json",
+  "gmail_tracker_nudge_threshold_source": "hardcoded/env",
+  "tailoring_profile_source": "base_resume.json",
+  "prep_agent_db_reading": {
+    "skills_table": true,
+    "resources_table": true,
+    "resource_skills_table": true
+  },
+  "files_querying_settings_table": [
+    ".\\routers\\admin.py",
+    ".\\scripts\\seed.py"
+  ]
+}

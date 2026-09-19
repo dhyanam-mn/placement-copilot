@@ -12,7 +12,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from routes.health import router as health_router
 from routes.embed import router as embed_router
 from routes.generate import router as generate_router
-from routes.prep import router as prep_router
 
 logger = logging.getLogger("uvicorn.info")
 MODEL_NAME = "all-MiniLM-L6-v2"
@@ -64,10 +63,9 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(embed_router)
 app.include_router(generate_router)
-app.include_router(prep_router)
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8001)

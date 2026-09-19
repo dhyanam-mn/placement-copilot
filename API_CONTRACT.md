@@ -54,7 +54,7 @@ Creates a new row — called by the Scout Agent flow after a job match. **[calls
   "company": "Innovaccer",
   "role": "SDE-1",
   "jd_text": "Strong DSA fundamentals, system design basics, SQL...",
-  "source": "serpapi"
+  "source": "adzuna"
 }
 ```
 
@@ -191,29 +191,36 @@ Runs the Scam-Check Agent on a recruiter contact tied to this application. **[ca
 
 ---
 
-## POST /applications/{id}/prep/evaluate-answer
+## GET /applications/{id}/prep
 
-Backs the Prep Agent's feedback loop. **[calls model-service /prep/evaluate-answer]**
-
-**Request**
-```json
-{
-  "question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.",
-  "student_answer": "I used sliding window tiling and filtered false positives based on confidence thresholds.",
-  "question_tags": ["hard negative mining", "sliding window tiling", "confidence thresholding"]
-}
-```
-
-**Backend behavior:** passes straight through to model-service and returns its response unmodified.
+Retrieves or generates learning resource recommendations for an application in `INTERVIEW` status.
 
 **Response**
 ```json
 {
-  "keyword_coverage": 0.67,
-  "feedback_text": "Good coverage of tiling and thresholding — you didn't explicitly name 'hard negative mining' itself, worth stating the term directly.",
-  "flagged_as_weak": false
+  "application_id": 1,
+  "recommendations": [
+    {
+      "id": 10,
+      "application_id": 1,
+      "resource_id": 2,
+      "title": "Docker Deep Dive",
+      "url": "https://docs.docker.com/",
+      "reason": "Recommended resource to master containerization required for this role.",
+      "est_hours": 4,
+      "created_at": "2026-09-19T05:00:00Z"
+    }
+  ]
 }
 ```
+
+---
+
+## POST /applications/{id}/prep
+
+Manually triggers/regenerates learning resource recommendations for an application.
+
+**Response**: Same schema as `GET /applications/{id}/prep`.
 
 ---
 

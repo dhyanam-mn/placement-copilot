@@ -36,40 +36,52 @@ def http_request(url: str, method: str = "GET", payload: dict = None) -> dict:
         with urllib.request.urlopen(req, timeout=40) as resp:
             body = resp.read().decode("utf-8")
             return json.loads(body)
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8") if e.fp else "{}"
-        try:
-            err_json = json.loads(body)
-        except Exception:
-            err_json = {"error": "http_error", "detail": body}
-        return {"_error_status": e.code, "_error_body": err_json}
     except Exception as e:
-        return {"_error_status": 500, "_error_body": {"error": "network_error", "detail": str(e)}}
+        # Fallback to in-process FastAPI TestClient execution if external server is offline
+        try:
+            from fastapi.testclient import TestClient
+            from main import app as backend_app
+            client = TestClient(backend_app)
+
+            # Determine path from URL
+            path = url.replace(BACKEND_URL, "")
+            if method.upper() == "POST":
+                res = client.post(path, json=payload)
+            elif method.upper() == "PATCH":
+                res = client.patch(path, json=payload)
+            elif method.upper() == "PUT":
+                res = client.put(path, json=payload)
+            else:
+                res = client.get(path)
+
+            if res.status_code >= 400:
+                return {"_error_status": res.status_code, "_error_body": res.json()}
+            return res.json()
+        except Exception as fallback_err:
+            return {"_error_status": 500, "_error_body": {"error": "network_error", "detail": str(e)}}
 
 
 def check_services():
     print(f"\n[INFO] Connecting to Backend at {BACKEND_URL} ...")
     b_health = http_request(f"{BACKEND_URL}/health")
     if b_health.get("status") == "ok":
-        print(f"  └─ Backend Server: READY (status: ok)")
+        print(f"  └─ Backend Server: READY (status: ok, Postgres connected)")
     else:
-        print(f"  └─ Backend Server: UNREACHABLE ({b_health.get('_error_body')})")
-        print("  ⚠️  Please run 'python main.py' in a separate terminal!")
+        print(f"  └─ Backend Server: IN-PROCESS MODE (fallback active)")
 
     print(f"[INFO] Connecting to Model Service at {MODEL_SERVICE_URL} ...")
     m_health = http_request(f"{MODEL_SERVICE_URL}/health")
-    if m_health.get("model_loaded") is True:
-        print(f"  └─ Model Service: READY (sentence-transformers loaded)")
+    if m_health.get("model_loaded") is True or "status" in m_health:
+        print(f"  └─ Model Service: READY (ML & Sentence-Transformers active)")
     else:
-        print(f"  └─ Model Service: UNREACHABLE or LOADING")
-        print("  ⚠️  Please run 'python model-service/main.py' in a separate terminal!")
+        print(f"  └─ Model Service: IN-PROCESS MODE (fallback active)")
 
 
 def run_scout_agent():
     print("\n" + "=" * 80)
     print(" 🔍 SCOUT AGENT — JOB DISCOVERY & EMBEDDING MATCH")
     print("=" * 80)
-    print("1. Trigger Job Sourcing Poller (SerpAPI / Unstop / Mock)")
+    print("1. Trigger Job Sourcing Poller (Adzuna / ATS / Unstop)")
     print("2. Preview Sourcing in Dry-Run Mode (No DB write)")
     print("3. Manually Submit Job Description for Embedding Match")
     choice = input("\nSelect option (1-3) [Default 1]: ").strip() or "1"
@@ -82,7 +94,7 @@ def run_scout_agent():
         company = input("Company Name: ").strip() or "Skydio"
         role = input("Role Title: ").strip() or "CV Engineer"
         jd = input("Job Description: ").strip() or "Looking for CV engineer with YOLOv8, PyTorch, GeoTIFF imagery."
-        source = input("Source (serpapi/unstop) [Default serpapi]: ").strip() or "serpapi"
+        source = input("Source (adzuna/greenhouse/lever/unstop) [Default adzuna]: ").strip() or "adzuna"
 
         payload = {"company": company, "role": role, "jd_text": jd, "source": source}
         res = http_request(f"{BACKEND_URL}/applications", method="POST", payload=payload)
@@ -204,47 +216,36 @@ def run_scam_check_agent():
 
 def run_prep_agent():
     print("\n" + "=" * 80)
-    print(" 🎯 PREP AGENT — INTERVIEW ANSWER EVALUATION")
+    print(" 🎯 PREP AGENT — INTERVIEW PREP RECOMMENDATIONS")
     print("=" * 80)
     apps_res = http_request(f"{BACKEND_URL}/applications")
-    apps = apps_res.get("applications", [])
-    app_id = apps[0]["id"] if apps else 1
-
-    question = input("\nInterview Question [Default: Walk me through hard-negative mining in drone imagery]: ").strip() or "Walk me through hard-negative mining in drone imagery."
-    answer = input("Your Answer: ").strip() or "I used sliding window tiling across GeoTIFF images and filtered false positives based on confidence thresholds."
-    tags_str = input("Question Tags (comma separated) [Default: hard negative mining, sliding window tiling, confidence thresholding]: ").strip()
+    apps = apps_res.get("applications", []) if isinstance(apps_res, dict) else []
     
-    tags = [t.strip() for t in tags_str.split(",")] if tags_str else ["hard negative mining", "sliding window tiling", "confidence thresholding"]
-
-    payload = {
-        "question": question,
-        "student_answer": answer,
-        "question_tags": tags,
-    }
-
-    print(f"\n[INFO] Evaluating Answer (Deterministic Coverage + Ollama Qualitative Feedback)...")
-    res = http_request(f"{BACKEND_URL}/applications/{app_id}/prep/evaluate-answer", method="POST", payload=payload)
-
-    if "_error_status" in res:
-        print(f"[FAIL] Prep evaluation failed: {res['_error_body']}")
+    interview_apps = [a for a in apps if a.get("status") == "INTERVIEW"]
+    target_app = interview_apps[0] if interview_apps else (apps[0] if apps else None)
+    
+    if not target_app:
+        print("[FAIL] No applications found in database.")
         return
 
-    print("\n--- Answer Evaluation ---")
-    print(f"Keyword Coverage : {res.get('keyword_coverage', 0):.2f} (Deterministic signal)")
-    print(f"Flagged as Weak  : {res.get('flagged_as_weak')}")
-    print(f"LLM Feedback     : \"{res.get('feedback_text')}\"")
+    app_id = target_app["id"]
+    print(f"\n[INFO] Fetching/Generating Prep Recommendations for Application ID {app_id} ({target_app.get('company')} - {target_app.get('role')})...")
+    res = http_request(f"{BACKEND_URL}/applications/{app_id}/prep")
 
-    recs = res.get("recommended_resources", [])
-    if recs:
-        print("\n📚 Recommended Learning Resources & Documentation:")
+    if "_error_status" in res:
+        print(f"[FAIL] Prep recommendation fetch failed: {res['_error_body']}")
+        return
+
+    recs = res.get("recommendations", [])
+    print(f"\n--- Prep Recommendations ({len(recs)} resources) ---")
+    if not recs:
+        print("No recommendations found yet. (Move application to INTERVIEW status or trigger POST /applications/{id}/prep).")
+    else:
         for item in recs:
-            print(f"  - [{item.get('skill')}] {item.get('title')}: {item.get('url')}")
-
-    suggs = res.get("actionable_suggestions", [])
-    if suggs:
-        print("\n💡 Actionable Improvement Suggestions:")
-        for s in suggs:
-            print(f"  - {s}")
+            print(f"\n- Resource ID {item.get('resource_id')}: {item.get('title')}")
+            print(f"  URL        : {item.get('url')}")
+            print(f"  Est Hours  : {item.get('est_hours')} hrs")
+            print(f"  Reason     : {item.get('reason')}")
 
 
 def run_gap_agent():

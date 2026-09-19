@@ -1,19 +1,39 @@
 import os
-import json
 import re
-from typing import Any, Dict, List
+import logging
+from typing import Any, Dict, List, Optional
 from sqlalchemy.orm import Session
-from models import Application, TailoredResume
+from models import Application, TailoredResume, Profile, ProfileProject
+
+logger = logging.getLogger("placement_copilot.tailoring")
 
 
-def _load_base_resume() -> List[Dict[str, Any]]:
-    """Load base resume bullets from base_resume.json."""
-    file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "base_resume.json")
-    if os.path.exists(file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return data.get("base_bullets", [])
-    # Fallback default base bullets if file is missing
+def _load_base_resume(db: Optional[Session] = None) -> List[Dict[str, Any]]:
+    """
+    Load base resume projects and bullets directly from the database `profile` and `profile_projects` tables.
+    
+    SCORING DOCUMENTATION:
+    - Scout Sourcing / Application Matching: Uses embedding-based scoring via model-service `/embed`
+      computing cosine similarity between JD text and candidate bullets.
+    - Tailoring Agent Bullet Reordering: Uses deterministic TF-IDF / keyword overlap scoring
+      comparing JD keywords against project bullet text and skill tags for fast, reproducible ordering.
+    """
+    if db is not None:
+        try:
+            projects = db.query(ProfileProject).all()
+            if projects:
+                results = []
+                for p in projects:
+                    results.append({
+                        "project": p.project_name,
+                        "bullet": p.bullet_text,
+                        "keywords": p.skill_tags or [],
+                    })
+                return results
+        except Exception as exc:
+            logger.warning(f"Could not load profile projects from DB: {exc}")
+
+    # Fallback default projects if DB table is empty
     return [
         {
             "project": "DronaMaps CV Pipeline",
@@ -51,11 +71,13 @@ def _extract_keywords(text: str) -> set:
 
 def tailor_resume_for_application(db: Session, application: Application) -> Dict[str, Any]:
     """
-    Deterministic Tailoring Agent (No LLM call, no model-service call).
-    Reorders student's base resume bullets based on keyword overlap with JD text.
-    Updates application status to READY_TO_APPLY and links tailored_resume_id.
+    Tailoring Agent Workflow:
+    - Reads candidate bullets from `profile` & `profile_projects` DB tables.
+    - Reorders bullets based on TF-IDF / keyword overlap with the target JD.
+    - Saves tailored resume data into `tailored_resumes` table.
+    - Updates application status to READY_TO_APPLY.
     """
-    base_bullets = _load_base_resume()
+    base_bullets = _load_base_resume(db)
     jd_keywords = _extract_keywords(application.jd_text)
 
     scored_bullets = []
@@ -67,7 +89,7 @@ def tailor_resume_for_application(db: Session, application: Application) -> Dict
         else:
             score = 0.0
 
-        # Also add text-level keyword matches
+        # Text-level keyword matches
         bullet_text_lower = item["bullet"].lower()
         extra_matches = sum(1 for kw in jd_keywords if kw in bullet_text_lower)
         bonus = min(0.3, extra_matches * 0.05)
@@ -83,10 +105,7 @@ def tailor_resume_for_application(db: Session, application: Application) -> Dict
     scored_bullets.sort(key=lambda x: x["score"], reverse=True)
 
     max_score = scored_bullets[0]["score"] if scored_bullets else 0.50
-
-    resume_data = {
-        "ordered_bullets": scored_bullets
-    }
+    resume_data = {"ordered_bullets": scored_bullets}
 
     # Save to tailored_resumes table
     tailored_record = TailoredResume(
@@ -98,8 +117,7 @@ def tailor_resume_for_application(db: Session, application: Application) -> Dict
     db.commit()
     db.refresh(tailored_record)
 
-    # Update application row: set status READY_TO_APPLY and link tailored_resume_id
-    application.status = "READY_TO_APPLY"
+    # Link tailored_resume_id to application row
     application.tailored_resume_id = tailored_record.id
     db.commit()
     db.refresh(application)
@@ -108,3 +126,46 @@ def tailor_resume_for_application(db: Session, application: Application) -> Dict
         "tailored_resume_id": tailored_record.id,
         "resume_data": resume_data,
     }
+
+
+def render_tailored_resume_tex(db: Session, application_id: int) -> str:
+    """
+    Converts base_resume.tex into a dynamic LaTeX template populated with DB profile info
+    and tailored bullet ordering.
+    """
+    profile = db.query(Profile).first()
+    student_name = profile.name if profile else "Dhyanam Mahajan"
+
+    app = db.query(Application).filter(Application.id == application_id).first()
+    bullets = []
+    if app and app.tailored_resume_id:
+        tr = db.query(TailoredResume).filter(TailoredResume.id == app.tailored_resume_id).first()
+        if tr and isinstance(tr.resume_data, dict):
+            bullets = [b["bullet"] for b in tr.resume_data.get("ordered_bullets", [])]
+
+    if not bullets:
+        raw_bullets = _load_base_resume(db)
+        bullets = [b["bullet"] for b in raw_bullets]
+
+    items_tex = "\n".join([f"\\resumeItem{{{b}}}" for b in bullets])
+
+    tex_content = f"""\\documentclass[11pt,a4paper]{{article}}
+\\usepackage[margin=0.5in]{{geometry}}
+
+\\newcommand{{\\resumeItem}}[1]{{
+  \\item\\small{{#1 \\vspace{{-2pt}}}}
+}}
+
+\\begin{{document}}
+\\begin{{center}}
+    \\textbf{{\\Huge {student_name}}} \\\\ \\vspace{{5pt}}
+    Software Engineer | Resume
+\\end{{center}}
+
+\\section*{{Key Experience \\& Projects}}
+\\begin{{itemize}}
+{items_tex}
+\\end{{itemize}}
+\\end{{document}}
+"""
+    return tex_content

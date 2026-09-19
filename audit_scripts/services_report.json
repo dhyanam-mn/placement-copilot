@@ -1,0 +1,45 @@
+{
+  "postgres": {
+    "status": "REACHABLE",
+    "version": "PostgreSQL 18.6 on x86_64-windows, compiled by msvc-19.44.35228, 64-bit",
+    "connection_string_source": "database.py / env (URL: postgresql+pg8000://postgres:****@localhost:5432/placement_copilot)"
+  },
+  "fastapi": {
+    "status": "UP",
+    "info": "openapi.json fetched successfully, title: Placement Copilot Backend, paths count: 42"
+  },
+  "model_service": {
+    "status": "UP",
+    "response": "Embeddings returned for 1 text, dimension: 384"
+  },
+  "ollama": {
+    "status": "DOWN / UNREACHABLE",
+    "error": "timed out"
+  },
+  "gmail": {
+    "token_json_exists": true,
+    "valid": false,
+    "expired": true,
+    "refresh_token_present": true,
+    "api_call_status": "SUCCESS",
+    "messages_result_keys": [
+      "messages",
+      "nextPageToken",
+      "resultSizeEstimate"
+    ]
+  },
+  "tectonic": {
+    "status": "INSTALLED & WORKING",
+    "version": "Tectonic 0.17.0",
+    "pdf_generated": true,
+    "compile_stderr": "Fontconfig error: Cannot load default config file: No such file: (null)\n"
+  },
+  "env_vars": {
+    "DATABASE_URL": true,
+    "ADZUNA_APP_ID": false,
+    "ADZUNA_APP_KEY": false,
+    "MODEL_SERVICE_URL": "not set (default: http://localhost:8001)",
+    "OLLAMA_URL": "not set (default: http://localhost:11434)",
+    "NEXT_PUBLIC_API_BASE_URL": "not set"
+  }
+}

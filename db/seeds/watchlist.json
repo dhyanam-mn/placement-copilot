@@ -1,0 +1,26 @@
+[
+  {
+    "company": "Stripe",
+    "ats": "greenhouse",
+    "token": "stripe",
+    "active": true
+  },
+  {
+    "company": "Figma",
+    "ats": "greenhouse",
+    "token": "figma",
+    "active": true
+  },
+  {
+    "company": "Netflix",
+    "ats": "lever",
+    "token": "netflix",
+    "active": true
+  },
+  {
+    "company": "Spotify",
+    "ats": "lever",
+    "token": "spotify",
+    "active": true
+  }
+]

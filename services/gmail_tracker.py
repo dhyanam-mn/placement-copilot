@@ -2,7 +2,7 @@ import os
 import re
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Tuple, Any
 from sqlalchemy.orm import Session
 
@@ -12,21 +12,23 @@ from routers.applications import update_application_status
 
 logger = logging.getLogger("placement_copilot.gmail_tracker")
 
-# File path for persisting sync state (last_synced_history_id, last_synced_timestamp)
-SYNC_STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "gmail_sync_state.json")
 CREDENTIALS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "credentials.json")
 TOKEN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "token.json")
 
 GMAIL_SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+
+ATS_DOMAINS = {
+    "greenhouse.io", "boards.greenhouse.io", "lever.co", "api.lever.co",
+    "ashbyhq.com", "workday.com", "myworkday.com", "workday-online.com",
+    "smartrecruiters.com", "jobvite.com", "bamboohr.com", "icims.com"
+}
 
 
 # ==============================================================================
 # 1. Deterministic Email Classifier
 # ==============================================================================
 
-# Keywords and Regex patterns for classification (order matters for priority)
 CLASSIFICATION_PATTERNS: List[Tuple[str, str, List[str]]] = [
-    # (Category Name, Status Enum, Patterns/Keywords)
     (
         "offer",
         "OFFER",
@@ -104,16 +106,6 @@ CLASSIFICATION_PATTERNS: List[Tuple[str, str, List[str]]] = [
 
 
 def classify_email(subject: str, body: str) -> Optional[Tuple[str, str]]:
-    """
-    Classifies an incoming email into one of:
-    - ("offer", "OFFER")
-    - ("regret", "REJECTED")
-    - ("interview", "INTERVIEW")
-    - ("assessment", "OA_INVITE")
-    - ("application received", "APPLIED")
-    Returns (category, status_enum) or None if unclassified.
-    Uses pure deterministic keyword and regex matching per system design rules.
-    """
     text = f"{subject}\n{body}".lower()
 
     for category, status_enum, patterns in CLASSIFICATION_PATTERNS:
@@ -129,14 +121,59 @@ def classify_email(subject: str, body: str) -> Optional[Tuple[str, str]]:
 # 2. Company & Application Matching Logic
 # ==============================================================================
 
+def extract_sender_email_and_name(sender_str: str) -> Tuple[str, str]:
+    """Extract email address and display name from sender string."""
+    if not sender_str:
+        return ("", "")
+    sender_str = sender_str.strip()
+    match = re.search(r"^(.*?)\s*<([^>]+)>$", sender_str)
+    if match:
+        name = match.group(1).strip().strip('"').strip("'")
+        email = match.group(2).strip().lower()
+        return (email, name)
+    if "@" in sender_str:
+        return (sender_str.lower(), "")
+    return (sender_str.lower(), "")
+
+
 def extract_domain(sender_email: str) -> str:
     """Extract clean domain from email address string e.g. 'hr@razorpay.com' -> 'razorpay.com'."""
-    if "<" in sender_email and ">" in sender_email:
-        sender_email = sender_email.split("<")[1].split(">")[0]
-    sender_email = sender_email.strip().lower()
-    if "@" in sender_email:
-        return sender_email.split("@")[1]
-    return ""
+    email, _ = extract_sender_email_and_name(sender_email)
+    if "@" in email:
+        return email.split("@")[1].strip().lower()
+    return email.strip().lower()
+
+
+def extract_second_level_label(domain: str) -> str:
+    """Extract the second-level label (SLD / main brand name) from a domain."""
+    if not domain:
+        return ""
+    parts = domain.lower().split(".")
+    tlds = {"com", "co", "in", "io", "org", "net", "ai", "dev", "app", "tech", "careers", "gov", "edu", "uk", "us", "ca"}
+    non_tld_parts = [p for p in parts if p not in tlds]
+    if non_tld_parts:
+        return non_tld_parts[-1]
+    return parts[0] if parts else ""
+
+
+def normalize_company_name(company: str) -> str:
+    """
+    Clean and normalize company name for robust matching.
+    Lowercases, strips punctuation, and removes common corporate suffixes.
+    """
+    if not company:
+        return ""
+    cleaned = company.lower()
+    cleaned = re.sub(r'[^\w\s]', '', cleaned)
+    words = [
+        w for w in cleaned.split()
+        if w not in {
+            "pvt", "ltd", "limited", "technologies", "technology", "tech",
+            "inc", "llc", "corp", "corporation", "solutions", "labs",
+            "suite", "group", "services", "software", "private"
+        }
+    ]
+    return " ".join(words) if words else cleaned.strip()
 
 
 def match_email_to_application(
@@ -144,71 +181,207 @@ def match_email_to_application(
 ) -> Optional[Application]:
     """
     Fuzzy match an email against existing applications in the database.
-    Checks:
-    1. Direct match on company name (case-insensitive) in sender email, domain, subject, or body.
-    2. Normalized word overlap between company name and sender/subject text.
-
-    Returns the matching Application object if confident, or None if no confident match.
-    Does NOT create new application rows if unmatched.
+    1. Extracts registrable domain and second-level label (SLD).
+    2. Compares SLD label and normalized company name.
+    3. Handles ATS senders (greenhouse.io, lever.co, ashbyhq.com, workday) by matching display name, subject, or body.
+    4. Logs unmatched emails with exact reason.
     """
     applications = db.query(Application).all()
     if not applications:
+        logger.warning(f"Unmatched email from '{sender}' (subject: '{subject}'): Reason - Applications table is empty")
         return None
 
-    sender_domain = extract_domain(sender)
-    full_text = f"{sender} {sender_domain} {subject} {body}".lower()
+    email, display_name = extract_sender_email_and_name(sender)
+    domain = extract_domain(email)
+    sld_label = extract_second_level_label(domain)
+
+    is_ats = any(domain.endswith(ats_dom) for ats_dom in ATS_DOMAINS)
+
+    display_name_norm = normalize_company_name(display_name)
+    subject_norm = normalize_company_name(subject)
+    full_text_lower = f"{display_name} {subject} {body}".lower()
 
     best_app = None
     best_score = 0.0
 
     for app in applications:
-        company_clean = app.company.lower().strip()
-        # Remove common business suffixes for matching
-        company_base = re.sub(r"\b(inc|llc|ltd|pvt|solutions|tech|technologies|suite|labs)\b", "", company_clean).strip()
-        if not company_base:
-            company_base = company_clean
+        comp_norm = normalize_company_name(app.company)
+        comp_raw_lower = app.company.lower().strip()
+        if not comp_norm:
+            comp_norm = comp_raw_lower
 
         score = 0.0
 
-        # Exact company name in subject or sender
-        if company_clean in sender.lower() or company_clean in subject.lower():
-            score += 1.0
-        elif company_base and (company_base in sender.lower() or company_base in subject.lower()):
-            score += 0.85
-        elif company_base and company_base in sender_domain:
-            score += 0.8
-        elif company_base and company_base in full_text:
-            score += 0.6
+        if is_ats:
+            # ATS Senders: Match company in display name, subject, or body
+            if comp_norm and (re.search(r'\b' + re.escape(comp_norm) + r'\b', display_name_norm) or re.search(r'\b' + re.escape(comp_raw_lower) + r'\b', display_name.lower())):
+                score += 0.90
+            elif comp_norm and (re.search(r'\b' + re.escape(comp_norm) + r'\b', subject_norm) or re.search(r'\b' + re.escape(comp_raw_lower) + r'\b', subject.lower())):
+                score += 0.85
+            elif comp_norm and re.search(r'\b' + re.escape(comp_norm) + r'\b', full_text_lower):
+                score += 0.70
+        else:
+            # Non-ATS Senders: Match SLD label against normalized company name
+            if comp_norm and sld_label and (comp_norm == sld_label or comp_norm in sld_label or sld_label in comp_norm):
+                score += 0.90
+            elif comp_norm and (re.search(r'\b' + re.escape(comp_norm) + r'\b', display_name_norm) or re.search(r'\b' + re.escape(comp_raw_lower) + r'\b', display_name.lower())):
+                score += 0.85
+            elif comp_norm and (re.search(r'\b' + re.escape(comp_norm) + r'\b', subject_norm) or re.search(r'\b' + re.escape(comp_raw_lower) + r'\b', subject.lower())):
+                score += 0.80
+            elif comp_norm and re.search(r'\b' + re.escape(comp_norm) + r'\b', full_text_lower):
+                score += 0.60
 
-        # Check role match boost if company matched
-        if score > 0 and app.role.lower() in full_text:
-            score += 0.2
+        # Role match boost
+        if score > 0 and app.role and app.role.lower() in full_text_lower:
+            score += 0.10
 
         if score > best_score:
             best_score = score
             best_app = app
 
-    # Confidence threshold for a match
-    if best_score >= 0.6:
-        logger.info(f"Matched email from '{sender}' to Application ID {best_app.id} ({best_app.company}) with score {best_score}")
+    if best_score >= 0.60:
+        logger.info(f"Matched email from '{sender}' to Application ID {best_app.id} ({best_app.company}) with score {best_score:.2f}")
         return best_app
 
-    logger.warning(f"No confident application match found for email from '{sender}' (best score: {best_score})")
+    reason = f"No matching application found for domain label '{sld_label}' or ATS display name/subject (best score: {best_score:.2f})"
+    logger.warning(f"Unmatched email from '{sender}' (subject: '{subject}'): Reason - {reason}")
     return None
 
 
 # ==============================================================================
-# 3. Sync State Persistence
+# 3. Nudges & Auto-Ghost Sweeper
 # ==============================================================================
 
-def load_sync_state() -> Dict[str, Any]:
-    """Load sync state (last_synced_history_id, last_synced_timestamp, etc.) from disk."""
-    if os.path.exists(SYNC_STATE_FILE):
-        try:
-            with open(SYNC_STATE_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            logger.error(f"Error reading sync state file: {e}")
+def get_stale_application_nudges(db: Session, threshold_days: Optional[int] = None) -> Dict[str, Any]:
+    """Returns open applications stale past threshold_days (below ghost_days)."""
+    from services.settings_service import get_nudge_days, get_ghost_days
+    if threshold_days is None:
+        threshold_days = get_nudge_days(db)
+    ghost_days = get_ghost_days(db)
+
+    now = datetime.now(timezone.utc)
+    open_statuses = ("DISCOVERED", "READY_TO_APPLY", "APPLIED", "OA_INVITE", "INTERVIEW")
+
+    open_apps = (
+        db.query(Application)
+        .filter(Application.status.in_(open_statuses))
+        .order_by(Application.last_contact_date.asc())
+        .all()
+    )
+
+    nudges = []
+    for app in open_apps:
+        if app.last_contact_date:
+            app_contact = app.last_contact_date
+            if app_contact.tzinfo is None:
+                app_contact = app_contact.replace(tzinfo=timezone.utc)
+            days_inactive = (now - app_contact).days
+        else:
+            days_inactive = 0
+
+        if threshold_days <= days_inactive < ghost_days:
+            nudges.append({
+                "id": app.id,
+                "company": app.company,
+                "role": app.role,
+                "status": app.status,
+                "status_source": app.status_source,
+                "match_score": app.match_score,
+                "last_contact_date": app.last_contact_date.isoformat(),
+                "days_inactive": days_inactive,
+                "nudge_message": f"Application for '{app.company}' ({app.role}) has had no response for {days_inactive} days. Consider following up with the recruiter.",
+            })
+
+    return {
+        "threshold_days": threshold_days,
+        "ghost_days": ghost_days,
+        "total_nudges": len(nudges),
+        "nudges": nudges,
+    }
+
+
+async def run_auto_ghost_sweep(db: Session) -> Dict[str, Any]:
+    """
+    Staleness sweep for applications >= ghost_days old:
+    Transitions status to GHOSTED with status_source='auto_ghost'.
+    MUST NOT modify last_contact_date, only last_updated.
+    Triggers per-row gap report and Notification record.
+    """
+    from services.settings_service import get_ghost_days
+    ghost_days = get_ghost_days(db)
+
+    now = datetime.now(timezone.utc)
+    open_statuses = ("DISCOVERED", "READY_TO_APPLY", "APPLIED", "OA_INVITE", "INTERVIEW")
+
+    stale_apps = (
+        db.query(Application)
+        .filter(Application.status.in_(open_statuses))
+        .all()
+    )
+
+    ghosted_count = 0
+    updated_items = []
+
+    for app in stale_apps:
+        if app.last_contact_date:
+            app_contact = app.last_contact_date
+            if app_contact.tzinfo is None:
+                app_contact = app_contact.replace(tzinfo=timezone.utc)
+            days_inactive = (now - app_contact).days
+        else:
+            days_inactive = 0
+
+        if days_inactive >= ghost_days:
+            from services.status_service import set_status
+            updated_app = await set_status(db, app.id, "GHOSTED", source="auto_ghost")
+
+            ghosted_count += 1
+            updated_items.append({
+                "id": updated_app.id,
+                "company": updated_app.company,
+                "role": updated_app.role,
+                "status": updated_app.status,
+                "status_source": updated_app.status_source,
+                "days_inactive": days_inactive,
+                "last_contact_date": updated_app.last_contact_date.isoformat(),
+            })
+
+    return {
+        "status": "success",
+        "total_stale_checked": len(stale_apps),
+        "total_ghosted": ghosted_count,
+        "ghosted_applications": updated_items,
+    }
+
+
+# ==============================================================================
+# 4. Sync State Persistence
+# ==============================================================================
+
+def load_sync_state(db: Session = None) -> Dict[str, Any]:
+    from models import GmailSyncState
+    from database import SessionLocal
+    
+    close_db = False
+    if db is None:
+        db = SessionLocal()
+        close_db = True
+        
+    try:
+        record = db.query(GmailSyncState).first()
+        if record:
+            return {
+                "last_synced_history_id": record.last_synced_history_id,
+                "last_synced_timestamp": record.last_synced_timestamp.isoformat() if record.last_synced_timestamp else None,
+                "total_messages_processed": record.total_messages_processed,
+                "last_sync_at": record.updated_at.isoformat() if record.updated_at else None,
+            }
+    except Exception as e:
+        logger.error(f"Error reading sync state from DB: {e}")
+    finally:
+        if close_db:
+            db.close()
+            
     return {
         "last_synced_history_id": None,
         "last_synced_timestamp": None,
@@ -217,26 +390,42 @@ def load_sync_state() -> Dict[str, Any]:
     }
 
 
-def save_sync_state(state: Dict[str, Any]) -> None:
-    """Save updated sync state to disk."""
+def save_sync_state(state: Dict[str, Any], db: Session = None) -> None:
+    from models import GmailSyncState
+    from database import SessionLocal
+    from dateutil import parser
+    
+    close_db = False
+    if db is None:
+        db = SessionLocal()
+        close_db = True
+        
     try:
-        state["last_sync_at"] = datetime.now(timezone.utc).isoformat()
-        with open(SYNC_STATE_FILE, "w", encoding="utf-8") as f:
-            json.dump(state, f, indent=2)
+        record = db.query(GmailSyncState).first()
+        if not record:
+            record = GmailSyncState()
+            db.add(record)
+            
+        record.last_synced_history_id = state.get("last_synced_history_id")
+        timestamp_str = state.get("last_synced_timestamp")
+        if timestamp_str:
+            record.last_synced_timestamp = parser.isoparse(timestamp_str) if isinstance(timestamp_str, str) else timestamp_str
+        record.total_messages_processed = state.get("total_messages_processed", 0)
+        
+        db.commit()
     except Exception as e:
-        logger.error(f"Error saving sync state file: {e}")
+        logger.error(f"Error saving sync state to DB: {e}")
+        db.rollback()
+    finally:
+        if close_db:
+            db.close()
 
 
 # ==============================================================================
-# 4. Gmail API OAuth Client & Fetcher
+# 5. Gmail API OAuth Client & Fetcher
 # ==============================================================================
 
 def get_gmail_service():
-    """
-    Initialize Gmail API service using google-auth-oauthlib.
-    Requires credentials.json and token.json.
-    Returns Google API resource object or None if OAuth credentials are not configured.
-    """
     if not os.path.exists(CREDENTIALS_FILE) and not os.path.exists(TOKEN_FILE):
         logger.warning("Gmail OAuth credentials.json/token.json not found. Live API sync disabled.")
         return None
@@ -269,25 +458,26 @@ def get_gmail_service():
 
 
 def fetch_gmail_messages(service, start_history_id: Optional[str] = None) -> List[Dict[str, Any]]:
-    """
-    Fetch new Gmail messages since start_history_id or last 20 messages.
-    Returns list of parsed message dictionaries: [{ 'id': ..., 'sender': ..., 'subject': ..., 'body': ..., 'history_id': ... }].
-    """
     if not service:
         return []
 
     messages = []
+    msg_ids = set()
     try:
         if start_history_id:
-            res = service.users().history().list(userId="me", startHistoryId=start_history_id, historyTypes=["messageAdded"]).execute()
-            histories = res.get("history", [])
-            msg_ids = set()
-            for h in histories:
-                for m_added in h.get("messagesAdded", []):
-                    msg_ids.add(m_added["message"]["id"])
+            try:
+                res = service.users().history().list(userId="me", startHistoryId=start_history_id, historyTypes=["messageAdded"]).execute()
+                histories = res.get("history", [])
+                for h in histories:
+                    for m_added in h.get("messagesAdded", []):
+                        msg_ids.add(m_added["message"]["id"])
+            except Exception as hist_err:
+                logger.warning(f"History list failed ({hist_err}), falling back to recent messages.list")
+                res = service.users().messages().list(userId="me", maxResults=20).execute()
+                msg_ids = {m["id"] for m in res.get("messages", [])}
         else:
             res = service.users().messages().list(userId="me", maxResults=20).execute()
-            msg_ids = [m["id"] for m in res.get("messages", [])]
+            msg_ids = {m["id"] for m in res.get("messages", [])}
 
         for m_id in msg_ids:
             msg_data = service.users().messages().get(userId="me", id=m_id, format="full").execute()
@@ -303,7 +493,6 @@ def fetch_gmail_messages(service, start_history_id: Optional[str] = None) -> Lis
                 elif name_lower == "subject":
                     subject = h.get("value", "")
 
-            # Extract text body snippet or body
             snippet = msg_data.get("snippet", "")
 
             messages.append({
@@ -320,25 +509,13 @@ def fetch_gmail_messages(service, start_history_id: Optional[str] = None) -> Lis
 
 
 # ==============================================================================
-# 5. Core Sync Pipeline Executor
+# 6. Core Sync Pipeline Executor
 # ==============================================================================
 
 async def sync_gmail_tracker(
     db: Session, mock_messages: Optional[List[Dict[str, Any]]] = None
 ) -> Dict[str, Any]:
-    """
-    Main Gmail Tracker sync runner:
-    1. Loads sync state.
-    2. Fetches messages from live Gmail API OR mock_messages (if passed for testing/demo).
-    3. For each message:
-       - Checks historyId/timestamp to avoid re-processing.
-       - Classifies email into status category.
-       - Matches email to application in DB.
-       - If matched, calls update_application_status(status_source="gmail_auto").
-       - Fires gap report if status becomes REJECTED or GHOSTED.
-    4. Updates sync state and returns sync execution summary.
-    """
-    state = load_sync_state()
+    state = load_sync_state(db)
     messages_to_process = []
 
     if mock_messages is not None:
@@ -370,12 +547,10 @@ async def sync_gmail_tracker(
 
         app = match_email_to_application(db, sender, subject, body)
         if not app:
-            logger.info(f"Skipping classified email '{subject}' - no matching application row.")
             continue
 
-        # Invoke status update endpoint logic with status_source='gmail_auto'
-        patch_payload = ApplicationStatusPatchRequest(status=status_enum, status_source="gmail_auto")
-        updated_app = await update_application_status(app.id, patch_payload, db)
+        from services.status_service import set_status
+        updated_app = await set_status(db, app.id, status_enum, source="gmail_auto")
 
         synced_count += 1
         matched_count += 1
@@ -392,11 +567,10 @@ async def sync_gmail_tracker(
         if history_id and (not max_history_id or history_id > str(max_history_id)):
             max_history_id = history_id
 
-    # Update state
     state["last_synced_history_id"] = max_history_id or state.get("last_synced_history_id")
     state["last_synced_timestamp"] = datetime.now(timezone.utc).isoformat()
     state["total_messages_processed"] = state.get("total_messages_processed", 0) + len(messages_to_process)
-    save_sync_state(state)
+    save_sync_state(state, db)
 
     return {
         "status": "success",

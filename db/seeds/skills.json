@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Python",
+    "category": "Programming Languages",
+    "aliases": ["py", "python3"]
+  },
+  {
+    "name": "Docker",
+    "category": "DevOps & Infrastructure",
+    "aliases": ["dockerization", "containers", "containerization"]
+  },
+  {
+    "name": "PostgreSQL",
+    "category": "Databases",
+    "aliases": ["postgres", "psql", "relational database"]
+  },
+  {
+    "name": "PyTorch",
+    "category": "AI / Deep Learning",
+    "aliases": ["torch", "pytorch deep learning"]
+  },
+  {
+    "name": "FastAPI",
+    "category": "Web Frameworks",
+    "aliases": ["fastapi web", "async web framework"]
+  },
+  {
+    "name": "System Design",
+    "category": "Software Architecture",
+    "aliases": ["distributed systems", "system architecture"]
+  },
+  {
+    "name": "Computer Vision",
+    "category": "AI / Machine Learning",
+    "aliases": ["cv", "image processing", "opencv"]
+  },
+  {
+    "name": "Kubernetes",
+    "category": "DevOps & Infrastructure",
+    "aliases": ["k8s", "container orchestration"]
+  },
+  {
+    "name": "React",
+    "category": "Frontend Frameworks",
+    "aliases": ["reactjs", "react.js"]
+  },
+  {
+    "name": "TypeScript",
+    "category": "Programming Languages",
+    "aliases": ["ts"]
+  }
+]

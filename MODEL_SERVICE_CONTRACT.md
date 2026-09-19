@@ -1,6 +1,6 @@
 # MODEL_SERVICE_CONTRACT.md
 
-**Owner:** Dhyanam | **Runs on:** `http://localhost:8001` | **Consumed by:** Aadya's FastAPI backend, exactly like a third-party API (same pattern as SerpAPI)
+**Owner:** Dhyanam | **Runs on:** `http://localhost:8001` | **Consumed by:** Aadya's FastAPI backend, exactly like a third-party API
 
 This service is the only GPU-dependent piece of the system. It exposes four endpoints. Everything below is the source of truth both sides build against — if either side needs to change a shape, update this file first and re-sync before touching code.
 
@@ -80,14 +80,16 @@ Used for the **three, and only three**, LLM calls in the whole system. `task_typ
 ```
 Note: the flag/no-flag decision is already made by the rule layer before this is called. This endpoint only phrases *why*, it never decides.
 
-**Request — task_type: "answer_feedback"**
+**Request — task_type: "prep_recommendations"**
 ```json
 {
-  "task_type": "answer_feedback",
+  "task_type": "prep_recommendations",
   "context": {
-    "question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.",
-    "student_answer": "I used sliding window tiling and filtered false positives based on confidence thresholds.",
-    "expected_topics": ["hard negative mining", "sliding window tiling", "confidence thresholding"]
+    "jd_summary": "Python and Docker engineer with PostgreSQL expertise required.",
+    "candidates": [
+      { "id": 2, "title": "Docker Deep Dive", "skills": ["docker"] },
+      { "id": 3, "title": "PostgreSQL Manual", "skills": ["postgresql"] }
+    ]
   }
 }
 ```
@@ -111,8 +113,8 @@ Note: the underlying counts/stats are computed deterministically by the backend 
 **Response (same shape for all three task_types)**
 ```json
 {
-  "generated_text": "This looks risky: the sender's email domain doesn't match TechNova's official domain, and asking for a processing fee before any interview is a common red flag.",
-  "task_type": "scam_explanation"
+  "generated_text": "[{\"resource_id\": 2, \"reason\": \"Master Docker containerization required for this position.\", \"est_hours\": 4}]",
+  "task_type": "prep_recommendations"
 }
 ```
 
@@ -121,38 +123,11 @@ If Ollama is unreachable or times out (10s), respond with:
 ```json
 {
   "generated_text": "",
-  "task_type": "scam_explanation",
+  "task_type": "prep_recommendations",
   "error": "llm_unavailable"
 }
 ```
-The backend must handle `error: "llm_unavailable"` gracefully (e.g. show the deterministic `flagged_reasons` list without a phrased explanation) — a demo should never hard-fail because Ollama hiccuped.
-
----
-
-## POST /prep/evaluate-answer
-
-Used by the **Prep Agent's** feedback loop. Combines a cheap deterministic check with the LLM call above internally.
-
-**Request**
-```json
-{
-  "question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.",
-  "student_answer": "I used sliding window tiling and filtered false positives based on confidence thresholds.",
-  "question_tags": ["hard negative mining", "sliding window tiling", "confidence thresholding"]
-}
-```
-
-**Response**
-```json
-{
-  "keyword_coverage": 0.67,
-  "feedback_text": "Good coverage of tiling and thresholding — you didn't explicitly name 'hard negative mining' itself, worth stating the term directly.",
-  "flagged_as_weak": false
-}
-```
-- `keyword_coverage`: fraction of `question_tags` found (case-insensitive substring match) in `student_answer`, computed **before** any LLM call — instant, no model dependency.
-- `flagged_as_weak`: `true` if `keyword_coverage < 0.3`.
-- `feedback_text`: from the internal `/llm-generate` call with `task_type: "answer_feedback"`. If that call fails, fall back to `"Keyword coverage: {keyword_coverage}. LLM feedback unavailable."`
+The backend must handle `error: "llm_unavailable"` gracefully (e.g. fall back to deterministic SQL-ranked recommendations).
 
 ---
 

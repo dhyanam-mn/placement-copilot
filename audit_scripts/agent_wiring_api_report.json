@@ -1,0 +1,453 @@
+{
+  "agent_wiring": {},
+  "openapi_inventory": {
+    "total_endpoints": 64,
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/applications",
+        "summary": "Get Applications",
+        "operation_id": "get_applications_applications_get"
+      },
+      {
+        "method": "POST",
+        "path": "/applications",
+        "summary": "Create Application",
+        "operation_id": "create_application_applications_post"
+      },
+      {
+        "method": "GET",
+        "path": "/applications/{id}",
+        "summary": "Get Application By Id",
+        "operation_id": "get_application_by_id_applications__id__get"
+      },
+      {
+        "method": "GET",
+        "path": "/applications/{id}/events",
+        "summary": "Get Application Events",
+        "operation_id": "get_application_events_applications__id__events_get"
+      },
+      {
+        "method": "POST",
+        "path": "/applications/{id}/confirm-applied",
+        "summary": "Confirm Application Submission",
+        "operation_id": "confirm_application_submission_applications__id__confirm_applied_post"
+      },
+      {
+        "method": "POST",
+        "path": "/scout/sync",
+        "summary": "Trigger Scout Job Sourcing",
+        "operation_id": "trigger_scout_job_sourcing_scout_sync_post"
+      },
+      {
+        "method": "PATCH",
+        "path": "/applications/{id}/status",
+        "summary": "Update Application Status",
+        "operation_id": "update_application_status_applications__id__status_patch"
+      },
+      {
+        "method": "POST",
+        "path": "/applications/{id}/tailor",
+        "summary": "Tailor Application",
+        "operation_id": "tailor_application_applications__id__tailor_post"
+      },
+      {
+        "method": "GET",
+        "path": "/applications/{id}/gap-report",
+        "summary": "Get Application Gap Report",
+        "operation_id": "get_application_gap_report_applications__id__gap_report_get"
+      },
+      {
+        "method": "POST",
+        "path": "/applications/{id}/gap-report",
+        "summary": "Generate Application Gap Report",
+        "operation_id": "generate_application_gap_report_applications__id__gap_report_post"
+      },
+      {
+        "method": "GET",
+        "path": "/gap-report",
+        "summary": "Get Aggregate Gap Report",
+        "operation_id": "get_aggregate_gap_report_gap_report_get"
+      },
+      {
+        "method": "GET",
+        "path": "/applications/{id}/scam-check",
+        "summary": "Get Application Stored Scam Check",
+        "operation_id": "get_application_stored_scam_check_applications__id__scam_check_get"
+      },
+      {
+        "method": "POST",
+        "path": "/applications/{id}/scam-check",
+        "summary": "Run Application Scam Check",
+        "operation_id": "run_application_scam_check_applications__id__scam_check_post"
+      },
+      {
+        "method": "GET",
+        "path": "/applications/{id}/prep",
+        "summary": "Get Application Prep",
+        "operation_id": "get_application_prep_applications__id__prep_get"
+      },
+      {
+        "method": "POST",
+        "path": "/applications/{id}/prep",
+        "summary": "Generate Application Prep",
+        "operation_id": "generate_application_prep_applications__id__prep_post"
+      },
+      {
+        "method": "GET",
+        "path": "/notifications",
+        "summary": "Get Notifications",
+        "operation_id": "get_notifications_notifications_get"
+      },
+      {
+        "method": "POST",
+        "path": "/notifications/{id}/read",
+        "summary": "Mark Notification As Read",
+        "operation_id": "mark_notification_as_read_notifications__id__read_post"
+      },
+      {
+        "method": "GET",
+        "path": "/profile",
+        "summary": "Get Profile",
+        "operation_id": "get_profile_profile_get"
+      },
+      {
+        "method": "PUT",
+        "path": "/profile",
+        "summary": "Create Or Update Profile",
+        "operation_id": "create_or_update_profile_profile_put"
+      },
+      {
+        "method": "POST",
+        "path": "/profile",
+        "summary": "Create Or Update Profile",
+        "operation_id": "create_or_update_profile_profile_post"
+      },
+      {
+        "method": "GET",
+        "path": "/profile/projects",
+        "summary": "Get Profile Projects",
+        "operation_id": "get_profile_projects_profile_projects_get"
+      },
+      {
+        "method": "POST",
+        "path": "/profile/projects",
+        "summary": "Create Profile Project",
+        "operation_id": "create_profile_project_profile_projects_post"
+      },
+      {
+        "method": "PUT",
+        "path": "/profile/projects/{id}",
+        "summary": "Update Profile Project",
+        "operation_id": "update_profile_project_profile_projects__id__put"
+      },
+      {
+        "method": "DELETE",
+        "path": "/profile/projects/{id}",
+        "summary": "Delete Profile Project",
+        "operation_id": "delete_profile_project_profile_projects__id__delete"
+      },
+      {
+        "method": "POST",
+        "path": "/profile/import",
+        "summary": "Import Profile",
+        "operation_id": "import_profile_profile_import_post"
+      },
+      {
+        "method": "GET",
+        "path": "/resources",
+        "summary": "List Resources",
+        "operation_id": "list_resources_resources_get"
+      },
+      {
+        "method": "POST",
+        "path": "/resources",
+        "summary": "Create Resource",
+        "operation_id": "create_resource_resources_post"
+      },
+      {
+        "method": "GET",
+        "path": "/resources/{id}",
+        "summary": "Get Resource By Id",
+        "operation_id": "get_resource_by_id_resources__id__get"
+      },
+      {
+        "method": "PUT",
+        "path": "/resources/{id}",
+        "summary": "Update Resource",
+        "operation_id": "update_resource_resources__id__put"
+      },
+      {
+        "method": "DELETE",
+        "path": "/resources/{id}",
+        "summary": "Delete Resource",
+        "operation_id": "delete_resource_resources__id__delete"
+      },
+      {
+        "method": "POST",
+        "path": "/resources/check-links",
+        "summary": "Trigger Resource Link Check",
+        "operation_id": "trigger_resource_link_check_resources_check_links_post"
+      },
+      {
+        "method": "GET",
+        "path": "/skills",
+        "summary": "List Skills",
+        "operation_id": "list_skills_skills_get"
+      },
+      {
+        "method": "POST",
+        "path": "/skills",
+        "summary": "Create Skill",
+        "operation_id": "create_skill_skills_post"
+      },
+      {
+        "method": "GET",
+        "path": "/skills/{id}",
+        "summary": "Get Skill By Id",
+        "operation_id": "get_skill_by_id_skills__id__get"
+      },
+      {
+        "method": "PUT",
+        "path": "/skills/{id}",
+        "summary": "Update Skill",
+        "operation_id": "update_skill_skills__id__put"
+      },
+      {
+        "method": "DELETE",
+        "path": "/skills/{id}",
+        "summary": "Delete Skill",
+        "operation_id": "delete_skill_skills__id__delete"
+      },
+      {
+        "method": "GET",
+        "path": "/scam-patterns",
+        "summary": "List Scam Patterns",
+        "operation_id": "list_scam_patterns_scam_patterns_get"
+      },
+      {
+        "method": "POST",
+        "path": "/scam-patterns",
+        "summary": "Create Scam Pattern",
+        "operation_id": "create_scam_pattern_scam_patterns_post"
+      },
+      {
+        "method": "GET",
+        "path": "/scam-patterns/{id}",
+        "summary": "Get Scam Pattern By Id",
+        "operation_id": "get_scam_pattern_by_id_scam_patterns__id__get"
+      },
+      {
+        "method": "PUT",
+        "path": "/scam-patterns/{id}",
+        "summary": "Update Scam Pattern",
+        "operation_id": "update_scam_pattern_scam_patterns__id__put"
+      },
+      {
+        "method": "DELETE",
+        "path": "/scam-patterns/{id}",
+        "summary": "Delete Scam Pattern",
+        "operation_id": "delete_scam_pattern_scam_patterns__id__delete"
+      },
+      {
+        "method": "GET",
+        "path": "/watchlist",
+        "summary": "List Company Watchlist",
+        "operation_id": "list_company_watchlist_watchlist_get"
+      },
+      {
+        "method": "POST",
+        "path": "/watchlist",
+        "summary": "Create Watchlist Item",
+        "operation_id": "create_watchlist_item_watchlist_post"
+      },
+      {
+        "method": "GET",
+        "path": "/watchlist/{id}",
+        "summary": "Get Watchlist Item By Id",
+        "operation_id": "get_watchlist_item_by_id_watchlist__id__get"
+      },
+      {
+        "method": "PUT",
+        "path": "/watchlist/{id}",
+        "summary": "Update Watchlist Item",
+        "operation_id": "update_watchlist_item_watchlist__id__put"
+      },
+      {
+        "method": "DELETE",
+        "path": "/watchlist/{id}",
+        "summary": "Delete Watchlist Item",
+        "operation_id": "delete_watchlist_item_watchlist__id__delete"
+      },
+      {
+        "method": "GET",
+        "path": "/settings",
+        "summary": "List Settings",
+        "operation_id": "list_settings_settings_get"
+      },
+      {
+        "method": "POST",
+        "path": "/settings",
+        "summary": "Create Or Update Setting",
+        "operation_id": "create_or_update_setting_settings_post"
+      },
+      {
+        "method": "GET",
+        "path": "/settings/{key}",
+        "summary": "Get Setting By Key",
+        "operation_id": "get_setting_by_key_settings__key__get"
+      },
+      {
+        "method": "PUT",
+        "path": "/settings/{key}",
+        "summary": "Create Or Update Setting",
+        "operation_id": "create_or_update_setting_settings__key__put"
+      },
+      {
+        "method": "GET",
+        "path": "/health",
+        "summary": "Check Health",
+        "operation_id": "check_health_health_get"
+      },
+      {
+        "method": "POST",
+        "path": "/tracker/gmail/sync",
+        "summary": "Trigger Gmail Sync",
+        "operation_id": "trigger_gmail_sync_tracker_gmail_sync_post"
+      },
+      {
+        "method": "GET",
+        "path": "/tracker/gmail/status",
+        "summary": "Get Gmail Tracker Status",
+        "operation_id": "get_gmail_tracker_status_tracker_gmail_status_get"
+      },
+      {
+        "method": "GET",
+        "path": "/tracker/nudges",
+        "summary": "Get Tracker Nudges",
+        "operation_id": "get_tracker_nudges_tracker_nudges_get"
+      },
+      {
+        "method": "POST",
+        "path": "/tracker/auto-ghost",
+        "summary": "Trigger Auto Ghost",
+        "operation_id": "trigger_auto_ghost_tracker_auto_ghost_post"
+      },
+      {
+        "method": "POST",
+        "path": "/admin/demo/backdate",
+        "summary": "Demo Backdate Application",
+        "operation_id": "demo_backdate_application_admin_demo_backdate_post"
+      },
+      {
+        "method": "POST",
+        "path": "/tracker/demo/backdate",
+        "summary": "Demo Backdate Application",
+        "operation_id": "demo_backdate_application_tracker_demo_backdate_post"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/settings",
+        "summary": "Get Settings",
+        "operation_id": "get_settings_admin_settings_get"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/profile",
+        "summary": "Get Profiles",
+        "operation_id": "get_profiles_admin_profile_get"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/resources",
+        "summary": "Get Resources",
+        "operation_id": "get_resources_admin_resources_get"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/scam_patterns",
+        "summary": "Get Scam Patterns",
+        "operation_id": "get_scam_patterns_admin_scam_patterns_get"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/watchlist",
+        "summary": "Get Watchlist",
+        "operation_id": "get_watchlist_admin_watchlist_get"
+      },
+      {
+        "method": "GET",
+        "path": "/admin/scheduler/jobs",
+        "summary": "List Scheduled Jobs",
+        "operation_id": "list_scheduled_jobs_admin_scheduler_jobs_get"
+      },
+      {
+        "method": "POST",
+        "path": "/admin/scheduler/{job_id}/trigger",
+        "summary": "Trigger Scheduled Job",
+        "operation_id": "trigger_scheduled_job_admin_scheduler__job_id__trigger_post"
+      }
+    ]
+  },
+  "frontend_api_calls": [
+    {
+      "file": "frontend\\next-env.d.ts",
+      "line": 5,
+      "snippet": "// see https://nextjs.org/docs/app/building-your-application/configuring/typescript for more information."
+    },
+    {
+      "file": "frontend\\components\\GapReportView.tsx",
+      "line": 56,
+      "snippet": "{process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}?"
+    },
+    {
+      "file": "frontend\\components\\KanbanBoard.tsx",
+      "line": 79,
+      "snippet": "{process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}?"
+    },
+    {
+      "file": "frontend\\components\\ResumeTailoringView.tsx",
+      "line": 134,
+      "snippet": "{process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}?"
+    },
+    {
+      "file": "frontend\\components\\ScamCheckAlertCard.tsx",
+      "line": 110,
+      "snippet": "{process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}?"
+    },
+    {
+      "file": "frontend\\lib\\api.ts",
+      "line": 19,
+      "snippet": "const API_BASE_URL ="
+    },
+    {
+      "file": "frontend\\lib\\api.ts",
+      "line": 20,
+      "snippet": "process.env.NEXT_PUBLIC_API_BASE_URL ||"
+    },
+    {
+      "file": "frontend\\lib\\api.ts",
+      "line": 22,
+      "snippet": "\"http://localhost:8000\";"
+    },
+    {
+      "file": "frontend\\lib\\api.ts",
+      "line": 25,
+      "snippet": "const url = `${API_BASE_URL}${endpoint}`;"
+    },
+    {
+      "file": "frontend\\lib\\api.ts",
+      "line": 26,
+      "snippet": "const response = await fetch(url, {"
+    }
+  ],
+  "cors_check": {
+    "status_code": 200,
+    "allow_origin": "http://localhost:3000",
+    "allow_methods": null,
+    "allow_headers": null
+  },
+  "frontend_api_client_config": {
+    "frontend/lib/api.ts": "import {\n  Application,\n  CompanyWatchlist,\n  GapReport,\n  HealthStatus,\n  Notification,\n  PrepResponse,\n  Profile,\n  ProfileProject,\n  Resource,\n  ScamCheck,\n  ScamPattern,\n  Setting,\n  Skill,\n  StatusEvent,\n  TailoredResume,\n} from '@/types';\n\nconst API_BASE_URL =\n  process.env.NEXT_PUBLIC_API_BASE_URL ||\n  process.env.NEXT_PUBLIC_API_URL ||\n  \"http://localhost:8000\";\n\nasync function fetchJson<T>(endpoint: string, options?: RequestInit): Promise<T> {\n  const url = `${API_BASE_URL}${endpoint}`;\n  const response = await fetch(url, {\n    ...options,\n    headers: {\n      \"Content-Type\": \"application/json\",\n      ...(options?.headers || {}),\n    },\n  });\n\n  if (!response.ok) {\n    let errorMsg = `Request to ${endpoint} failed with status ${response.status}`;\n    try {\n      const errData = await response.json();\n      if (errData.detail) {\n        errorMsg = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);\n      } else if (errData.error) {\n        errorMsg = errData.error;\n      }\n    } catch {\n      // Use fallback errorMsg\n    }\n    throw new Error(errorMsg);\n  }\n\n  // Return empty object for 204 No Content\n  if (response.status === 204) {\n    return {} as T;\n  }\n\n  return response.json();\n}\n\n// --- Health Check ---\nexport async function getHealth(): Promise<HealthStatus> {\n  return fetchJson<HealthStatus>(\"/health\");\n}\n\n// --- Applications ---\nexport async function getApplications(params?: {\n  status?: string;\n  source?: string;\n  is_demo?: boolean;\n}): Promise<{ applications: Application[] }> {\n  const query = new URLSearchParams();\n  if (params?.status) query.append(\"status\", params.status);\n  if (params?.source) query.append(\"source\", params.source);\n  if (params?.is_demo !== undefined) query.append(\"is_demo\", String(params.is_demo));\n  const queryString = query.toString() ? `?${query.toString()}` : \"\";\n  return fetchJson<{ applications: Application[] }>(`/applications${queryString}`);\n}\n\nexport async function getApplication(id: number): Promise<Application> {\n  return fetchJson<Application>(`/applications/${id}`);\n}\n\nexport async function updateApplicationStatus(\n  id: number,\n  status: string,\n  status_source: string = \"manual\"\n): Promise<Application> {\n  return fetchJson<Application>(`/applications/${id}/status`, {\n    method: \"PATCH\",\n    body: JSON.stringify({ status, status_source }),\n  });\n}\n\nexport async function confirmApplicationApplied(id: number): Promise<Application> {\n  return fetchJson<Application>(`/applications/${id}/confirm-applied`, {\n    method: \"POST\",\n  });\n}\n\nexport async function getApplicationEvents(id: number): Promise<{ events: StatusEvent[] }> {\n  return fetchJson<{ events: StatusEvent[] }>(`/applications/${id}/events`);\n}\n\n// --- Scout Sync ---\nexport async function triggerScoutSync(dryRun: boolean = false): Promise<any> {\n  return fetchJson<any>(`/scout/sync?dry_run=${dryRun}`, {\n    method: \"POST\",\n  });\n}\n\n// --- Tailoring ---\nexport async function tailorResume(id: number): Promise<TailoredResume> {\n  return fetchJson<TailoredResume>(`/applications/${id}/tailor`, {\n    method: \"POST\",\n  });\n}\n\n// --- Gap Reports ---\nexport async function getGapReport(id: number): Promise<GapReport> {\n  return fetchJson<GapReport>(`/applications/${id}/gap-report`);\n}\n\nexport async function generateGapReport(id: number): Promise<GapReport> {\n  return fetchJson<GapReport>(`/applications/${id}/gap-report`, {\n    method: \"POST\",\n  });\n}\n\nexport async function getAggregateGapReport(): Promise<GapReport> {\n  return fetchJson<GapReport>(\"/gap-report\");\n}\n\n// --- Scam Check ---\nexport async function runScamCheck(id: number, data: any): Promise<ScamCheck> {\n  return fetchJson<ScamCheck>(`/applications/${id}/scam-check`, {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function getStoredScamCheck(id: number): Promise<ScamCheck> {\n  return fetchJson<ScamCheck>(`/applications/${id}/scam-check`);\n}\n\n// --- Prep Agent ---\nexport async function getPrepRecommendations(id: number): Promise<PrepResponse> {\n  return fetchJson<PrepResponse>(`/applications/${id}/prep`);\n}\n\nexport async function generatePrepRecommendations(id: number): Promise<PrepResponse> {\n  return fetchJson<PrepResponse>(`/applications/${id}/prep`, {\n    method: \"POST\",\n  });\n}\n\n// --- Notifications ---\nexport async function getNotifications(unreadOnly: boolean = false): Promise<{ notifications: Notification[] }> {\n  return fetchJson<{ notifications: Notification[] }>(`/notifications?unread_only=${unreadOnly}`);\n}\n\nexport async function markNotificationRead(id: number): Promise<Notification> {\n  return fetchJson<Notification>(`/notifications/${id}/read`, {\n    method: \"POST\",\n  });\n}\n\n// --- Gmail Tracker ---\nexport async function syncGmailTracker(): Promise<any> {\n  return fetchJson<any>(\"/gmail/sync\", {\n    method: \"POST\",\n  });\n}\n\nexport async function getStaleNudges(days: number = 14): Promise<Application[]> {\n  return fetchJson<Application[]>(`/tracker/nudges?stale_threshold_days=${days}`);\n}\n\n// --- Profile & Projects ---\nexport async function getProfile(): Promise<Profile> {\n  return fetchJson<Profile>(\"/profile\");\n}\n\nexport async function updateProfile(data: { name: string; email?: string; contact_info?: string }): Promise<Profile> {\n  return fetchJson<Profile>(\"/profile\", {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function getProfileProjects(): Promise<ProfileProject[]> {\n  return fetchJson<ProfileProject[]>(\"/profile/projects\");\n}\n\nexport async function createProfileProject(data: { project_name: string; bullet_text: string; skill_tags?: string[] }): Promise<ProfileProject> {\n  return fetchJson<ProfileProject>(\"/profile/projects\", {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function updateProfileProject(id: number, data: { project_name: string; bullet_text: string; skill_tags?: string[] }): Promise<ProfileProject> {\n  return fetchJson<ProfileProject>(`/profile/projects/${id}`, {\n    method: \"PUT\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function deleteProfileProject(id: number): Promise<void> {\n  return fetchJson<void>(`/profile/projects/${id}`, {\n    method: \"DELETE\",\n  });\n}\n\nexport async function importProfile(data: { name: string; email?: string; contact_info?: string; projects?: any[] }): Promise<Profile> {\n  return fetchJson<Profile>(\"/profile/import\", {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\n// --- Resources ---\nexport async function getResources(): Promise<Resource[]> {\n  return fetchJson<Resource[]>(\"/resources\");\n}\n\nexport async function createResource(data: { title: string; url: string; is_active?: boolean; skills?: any[] }): Promise<Resource> {\n  return fetchJson<Resource>(\"/resources\", {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function updateResource(id: number, data: { title: string; url: string; is_active?: boolean; skills?: any[] }): Promise<Resource> {\n  return fetchJson<Resource>(`/resources/${id}`, {\n    method: \"PUT\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function deleteResource(id: number): Promise<void> {\n  return fetchJson<void>(`/resources/${id}`, {\n    method: \"DELETE\",\n  });\n}\n\nexport async function checkResourceLinks(): Promise<any> {\n  return fetchJson<any>(\"/resources/check-links\", {\n    method: \"POST\",\n  });\n}\n\n// --- Skills ---\nexport async function getSkills(): Promise<Skill[]> {\n  return fetchJson<Skill[]>(\"/skills\");\n}\n\nexport async function createSkill(data: { name: string; category?: string; aliases?: string[] }): Promise<Skill> {\n  return fetchJson<Skill>(\"/skills\", {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function updateSkill(id: number, data: { name: string; category?: string; aliases?: string[] }): Promise<Skill> {\n  return fetchJson<Skill>(`/skills/${id}`, {\n    method: \"PUT\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function deleteSkill(id: number): Promise<void> {\n  return fetchJson<void>(`/skills/${id}`, {\n    method: \"DELETE\",\n  });\n}\n\n// --- Scam Patterns ---\nexport async function getScamPatterns(): Promise<ScamPattern[]> {\n  return fetchJson<ScamPattern[]>(\"/scam-patterns\");\n}\n\nexport async function createScamPattern(data: { category: string; pattern: string; weight: number; source_note?: string }): Promise<ScamPattern> {\n  return fetchJson<ScamPattern>(\"/scam-patterns\", {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function updateScamPattern(id: number, data: { category: string; pattern: string; weight: number; source_note?: string }): Promise<ScamPattern> {\n  return fetchJson<ScamPattern>(`/scam-patterns/${id}`, {\n    method: \"PUT\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function deleteScamPattern(id: number): Promise<void> {\n  return fetchJson<void>(`/scam-patterns/${id}`, {\n    method: \"DELETE\",\n  });\n}\n\n// --- Watchlist ---\nexport async function getWatchlist(): Promise<CompanyWatchlist[]> {\n  return fetchJson<CompanyWatchlist[]>(\"/watchlist\");\n}\n\nexport async function createWatchlistItem(data: { company: string; ats?: string; token?: string; active?: boolean }): Promise<CompanyWatchlist> {\n  return fetchJson<CompanyWatchlist>(\"/watchlist\", {\n    method: \"POST\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function updateWatchlistItem(id: number, data: { company: string; ats?: string; token?: string; active?: boolean }): Promise<CompanyWatchlist> {\n  return fetchJson<CompanyWatchlist>(`/watchlist/${id}`, {\n    method: \"PUT\",\n    body: JSON.stringify(data),\n  });\n}\n\nexport async function deleteWatchlistItem(id: number): Promise<void> {\n  return fetchJson<void>(`/watchlist/${id}`, {\n    method: \"DELETE\",\n  });\n}\n\n// --- Settings ---\nexport async function getSettings(): Promise<Setting[]> {\n  return fetchJson<Setting[]>(\"/settings\");\n}\n\nexport async function updateSetting(key: string, value: any): Promise<Setting> {\n  return fetchJson<Setting>(`/settings/${key}`, {\n    method: \"PUT\",\n    body: JSON.stringify({ key, value }),\n  });\n}"
+  }
+}

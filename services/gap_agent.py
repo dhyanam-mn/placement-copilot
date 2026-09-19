@@ -5,20 +5,17 @@ from models import Application, GapReport
 from services.model_service_client import call_llm_generate, ModelServiceUnavailableError
 
 
-KNOWN_SKILLS = [
-    "DSA", "system design", "SQL", "Python", "FastAPI", "React", "Node.js",
-    "MongoDB", "Redis", "YOLO", "GeoTIFF", "rasterio", "object detection",
-    "cloud deployment", "edge inference", "distributed systems", "PyTorch", "LoRA"
-]
-
-
-def _extract_jd_skills(jd_text: str) -> List[str]:
+def _extract_jd_skills(db: Session, jd_text: str) -> List[str]:
     """Extract known technical skill keywords present in JD text."""
+    from models import Skill
+    
     jd_lower = jd_text.lower()
     found = []
-    for skill in KNOWN_SKILLS:
-        if skill.lower() in jd_lower:
-            found.append(skill)
+    db_skills = db.query(Skill).all()
+    for s in db_skills:
+        if s.name.lower() in jd_lower:
+            found.append(s.name)
+            
     if not found:
         # Fallback keyword extraction from JD
         words = re.findall(r"\b[A-Z][a-z0-9]+\b", jd_text)
@@ -26,13 +23,18 @@ def _extract_jd_skills(jd_text: str) -> List[str]:
     return found
 
 
-def _get_matched_skills(required_skills: List[str]) -> tuple:
+
+def _get_matched_skills(db: Session, required_skills: List[str]) -> tuple:
     """Divide required skills into matched vs missing against student profile skills."""
-    student_skills = {
-        "dsa", "python", "fastapi", "postgresql", "redis", "yolo",
-        "geotiff", "rasterio", "object detection", "pytorch", "lora",
-        "react", "node.js", "mongodb", "sql"
-    }
+    from models import ProfileProject
+    
+    student_skills = set()
+    projects = db.query(ProfileProject).all()
+    for p in projects:
+        if p.skill_tags:
+            for tag in p.skill_tags:
+                student_skills.add(tag.lower())
+
     matched = []
     missing = []
     for skill in required_skills:
@@ -51,8 +53,8 @@ async def generate_per_row_gap_report(db: Session, application: Application) -> 
         if existing:
             return existing
 
-    required_skills = _extract_jd_skills(application.jd_text)
-    matched, missing = _get_matched_skills(required_skills)
+    required_skills = _extract_jd_skills(db, application.jd_text)
+    matched, missing = _get_matched_skills(db, required_skills)
 
     details = {
         "jd_required_skills": required_skills,

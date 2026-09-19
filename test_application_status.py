@@ -21,13 +21,18 @@ class TestApplicationStatusUpdate(unittest.TestCase):
 
     def setUp(self):
         self.db = SessionLocal()
+        from sqlalchemy import text
+        self.db.execute(text("UPDATE applications SET tailored_resume_id = NULL, gap_report_id = NULL WHERE company = 'Test Company Status';"))
+        self.db.execute(text("DELETE FROM applications WHERE company = 'Test Company Status';"))
+        self.db.commit()
+
         # Create a test application row with an old last_contact_date
         old_date = datetime.now(timezone.utc) - timedelta(days=10)
         self.test_app = Application(
-            company="Test Company",
+            company="Test Company Status",
             role="Software Engineer",
             jd_text="Python FastAPI PostgreSQL",
-            source="serpapi",
+            source="adzuna",
             status="APPLIED",
             status_source="manual",
             match_score=0.8,
@@ -39,12 +44,10 @@ class TestApplicationStatusUpdate(unittest.TestCase):
         self.app_id = self.test_app.id
 
     def tearDown(self):
-        # Cleanup created test row
-        if hasattr(self, 'app_id') and self.app_id:
-            app_to_delete = self.db.query(Application).filter(Application.id == self.app_id).first()
-            if app_to_delete:
-                self.db.delete(app_to_delete)
-                self.db.commit()
+        from sqlalchemy import text
+        self.db.execute(text("UPDATE applications SET tailored_resume_id = NULL, gap_report_id = NULL WHERE company = 'Test Company Status';"))
+        self.db.execute(text("DELETE FROM applications WHERE company = 'Test Company Status';"))
+        self.db.commit()
         self.db.close()
 
     def test_manual_status_update_changes_last_contact_date(self):

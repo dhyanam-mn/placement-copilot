@@ -1,0 +1,110 @@
+[
+  {
+    "company": "Razorpay",
+    "role": "Software Development Engineer - Intern",
+    "jd_text": "Strong Python, PostgreSQL, REST APIs, and microservices skills required.",
+    "source": "adzuna",
+    "status": "REJECTED",
+    "status_source": "gmail_auto",
+    "last_contact_days_ago": 30
+  },
+  {
+    "company": "DronaMaps",
+    "role": "Computer Vision Engineer Intern",
+    "jd_text": "Experience with PyTorch, OpenCV, GeoTIFF processing, and CUDA acceleration.",
+    "source": "adzuna",
+    "status": "INTERVIEW",
+    "status_source": "gmail_auto",
+    "last_contact_days_ago": 5
+  },
+  {
+    "company": "Innovaccer",
+    "role": "SDE-1 (Backend)",
+    "jd_text": "Python, FastAPI, Docker, and distributed systems architecture.",
+    "source": "adzuna",
+    "status": "DISCOVERED",
+    "status_source": "manual",
+    "last_contact_days_ago": 2
+  },
+  {
+    "company": "Skylark Drones",
+    "role": "Robotics & Embedded Systems Engineer",
+    "jd_text": "C++, Python, ROS, and computer vision algorithms.",
+    "source": "adzuna",
+    "status": "APPLIED",
+    "status_source": "manual",
+    "last_contact_days_ago": 3
+  },
+  {
+    "company": "Scam Corp",
+    "role": "Data Entry Specialist",
+    "jd_text": "Earn $500/day. Wire transfer processing fee required.",
+    "source": "unstop",
+    "status": "GHOSTED",
+    "status_source": "auto_ghost",
+    "last_contact_days_ago": 50
+  },
+  {
+    "company": "Scale AI",
+    "role": "AI Solutions Engineer",
+    "jd_text": "Strong Python, PyTorch, LLM fine-tuning, system design, and computer vision skills.",
+    "source": "adzuna",
+    "status": "READY_TO_APPLY",
+    "status_source": "manual",
+    "last_contact_days_ago": 1
+  },
+  {
+    "company": "Razorpay Payments",
+    "role": "Backend Developer",
+    "jd_text": "Python, PostgreSQL, Redis, and high-concurrency payment gateway architecture.",
+    "source": "adzuna",
+    "status": "APPLIED",
+    "status_source": "manual",
+    "last_contact_days_ago": 18
+  },
+  {
+    "company": "Uber Infrastructure",
+    "role": "Software Engineer II",
+    "jd_text": "Distributed caching, Docker, Kubernetes, and Go/Python microservices.",
+    "source": "adzuna",
+    "status": "APPLIED",
+    "status_source": "manual",
+    "last_contact_days_ago": 48
+  },
+  {
+    "company": "Microsoft",
+    "role": "SDE-1",
+    "jd_text": "Data structures, algorithms, C++, Java, or Python.",
+    "source": "greenhouse",
+    "status": "OA_INVITE",
+    "status_source": "gmail_auto",
+    "last_contact_days_ago": 10
+  },
+  {
+    "company": "Google ML Track",
+    "role": "Software Engineer - ML",
+    "jd_text": "Python, PyTorch, TensorFlow, computer vision, and machine learning infrastructure.",
+    "source": "lever",
+    "status": "INTERVIEW",
+    "status_source": "gmail_auto",
+    "last_contact_days_ago": 4
+  },
+  {
+    "company": "Stripe",
+    "role": "Software Engineer - Financial Infrastructure",
+    "jd_text": "Python, Ruby, PostgreSQL, and distributed database systems.",
+    "source": "greenhouse",
+    "status": "OFFER",
+    "status_source": "gmail_auto",
+    "last_contact_days_ago": 2
+  },
+  {
+    "company": "Fake Tech Scam",
+    "role": "Remote Data Analyst",
+    "jd_text": "Contact recruiter@scamtech-jobs.com. Wire transfer $100 processing fee via telegram.",
+    "source": "unstop",
+    "status": "REJECTED",
+    "status_source": "manual",
+    "last_contact_days_ago": 1
+  }
+]

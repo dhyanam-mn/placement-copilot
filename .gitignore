@@ -36,3 +36,19 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+
+confidential.json
+credentials.json
+client_secret*.json
+token.json
+.env
+.env.*
+!.env.example
+backup.sql
+node_modules/
+.next/
+__pycache__/
+venv/
+.venv/
+*.pdf
+tectonic.exe

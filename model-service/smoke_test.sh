@@ -188,11 +188,11 @@ assert data.get('task_type') == 'scam_explanation'
 assert isinstance(data.get('generated_text'), str) and len(data['generated_text']) > 0
 "
 
-# 4. LLM Generate - Answer Feedback
-FEEDBACK_PAYLOAD='{"task_type": "answer_feedback", "context": {"question": "How do you handle dataset imbalance in image classification?", "student_answer": "I use oversampling, class weighting, and focal loss.", "expected_topics": ["class weighting", "data augmentation", "evaluation metrics"]}}'
-run_test "LLM Generate: Answer Feedback" "POST" "/llm-generate" "$FEEDBACK_PAYLOAD" "
-assert data.get('task_type') == 'answer_feedback'
-assert isinstance(data.get('generated_text'), str) and len(data['generated_text']) > 0
+# 4. LLM Generate - Prep Recommendations
+PREP_PAYLOAD='{"task_type": "prep_recommendations", "context": {"jd_summary": "Python and Docker engineer needed.", "candidates": [{"id": 1, "title": "Docker Crash Course", "skills": ["docker"]}]}}'
+run_test "LLM Generate: Prep Recommendations" "POST" "/llm-generate" "$PREP_PAYLOAD" "
+assert data.get('task_type') == 'prep_recommendations'
+assert isinstance(data.get('generated_text'), str)
 "
 
 # 5. LLM Generate - Gap Summary
@@ -200,15 +200,6 @@ GAP_PAYLOAD='{"task_type": "gap_summary", "context": {"rejected_applications": [
 run_test "LLM Generate: Gap Summary" "POST" "/llm-generate" "$GAP_PAYLOAD" "
 assert data.get('task_type') == 'gap_summary'
 assert isinstance(data.get('generated_text'), str) and len(data['generated_text']) > 0
-"
-
-# 6. Prep Evaluate Answer
-PREP_PAYLOAD='{"question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.", "student_answer": "I used sliding window tiling and filtered false positives based on confidence thresholds.", "question_tags": ["hard negative mining", "sliding window tiling", "confidence thresholding"]}'
-run_test "Prep Evaluate Answer (/prep/evaluate-answer)" "POST" "/prep/evaluate-answer" "$PREP_PAYLOAD" "
-assert isinstance(data.get('keyword_coverage'), (int, float))
-assert 0.0 <= data['keyword_coverage'] <= 1.0
-assert isinstance(data.get('flagged_as_weak'), bool)
-assert isinstance(data.get('feedback_text'), str) and len(data['feedback_text']) > 0
 "
 
 echo "================================================================================"

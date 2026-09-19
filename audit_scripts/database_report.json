@@ -1,0 +1,534 @@
+{
+  "tables_summary": {
+    "applications": {
+      "status": "PRESENT",
+      "columns_count": 14,
+      "row_count": 852,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "company",
+        "role",
+        "jd_text",
+        "source",
+        "status",
+        "status_source",
+        "match_score",
+        "tailored_resume_id",
+        "gap_report_id",
+        "last_contact_date",
+        "last_updated",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "gap_reports": {
+      "status": "PRESENT",
+      "columns_count": 7,
+      "row_count": 67,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "application_id",
+        "report_type",
+        "summary_text",
+        "details",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "tailored_resumes": {
+      "status": "PRESENT",
+      "columns_count": 6,
+      "row_count": 1663,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "application_id",
+        "resume_data",
+        "match_score",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "scam_checks": {
+      "status": "PRESENT",
+      "columns_count": 9,
+      "row_count": 164,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "application_id",
+        "recruiter_name",
+        "recruiter_domain",
+        "risk_score",
+        "flagged_reasons",
+        "explanation_text",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "profile": {
+      "status": "PRESENT",
+      "columns_count": 6,
+      "row_count": 1,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "name",
+        "contact_info",
+        "email",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "profile_projects": {
+      "status": "PRESENT",
+      "columns_count": 7,
+      "row_count": 1,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "profile_id",
+        "project_name",
+        "bullet_text",
+        "skill_tags",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "skills": {
+      "status": "PRESENT",
+      "columns_count": 6,
+      "row_count": 35,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "name",
+        "category",
+        "aliases",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "resources": {
+      "status": "PRESENT",
+      "columns_count": 7,
+      "row_count": 23,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "title",
+        "url",
+        "created_at",
+        "is_demo",
+        "is_active",
+        "verified_at"
+      ]
+    },
+    "resource_skills": {
+      "status": "PRESENT",
+      "columns_count": 4,
+      "row_count": 24,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "resource_id",
+        "skill_name",
+        "weight"
+      ]
+    },
+    "scam_patterns": {
+      "status": "PRESENT",
+      "columns_count": 7,
+      "row_count": 34,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "category",
+        "pattern",
+        "weight",
+        "source_note",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "company_watchlist": {
+      "status": "PRESENT",
+      "columns_count": 7,
+      "row_count": 4,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "company",
+        "ats",
+        "token",
+        "active",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "settings": {
+      "status": "PRESENT",
+      "columns_count": 3,
+      "row_count": 10,
+      "is_empty": false,
+      "columns": [
+        "key",
+        "value",
+        "updated_at"
+      ]
+    },
+    "status_events": {
+      "status": "PRESENT",
+      "columns_count": 7,
+      "row_count": 389,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "application_id",
+        "old_status",
+        "new_status",
+        "event_source",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "notifications": {
+      "status": "PRESENT",
+      "columns_count": 6,
+      "row_count": 12,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "type",
+        "content",
+        "read",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "llm_cache": {
+      "status": "PRESENT",
+      "columns_count": 4,
+      "row_count": 1,
+      "is_empty": false,
+      "columns": [
+        "prompt_hash",
+        "response",
+        "created_at",
+        "is_demo"
+      ]
+    },
+    "gmail_sync_state": {
+      "status": "PRESENT",
+      "columns_count": 5,
+      "row_count": 1,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "last_synced_history_id",
+        "last_synced_timestamp",
+        "total_messages_processed",
+        "updated_at"
+      ]
+    },
+    "prep_recommendations": {
+      "status": "PRESENT",
+      "columns_count": 7,
+      "row_count": 2,
+      "is_empty": false,
+      "columns": [
+        "id",
+        "application_id",
+        "resource_id",
+        "reason",
+        "est_hours",
+        "created_at",
+        "is_demo"
+      ]
+    }
+  },
+  "missing_tables": [],
+  "foreign_keys": {
+    "applications": [
+      {
+        "name": "fk_gap_report",
+        "constrained_columns": [
+          "gap_report_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "gap_reports",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "fk_tailored_resume",
+        "constrained_columns": [
+          "tailored_resume_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "tailored_resumes",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "prep_recommendations": [
+      {
+        "name": "prep_recommendations_application_id_fkey",
+        "constrained_columns": [
+          "application_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "applications",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      },
+      {
+        "name": "prep_recommendations_resource_id_fkey",
+        "constrained_columns": [
+          "resource_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "resources",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "tailored_resumes": [
+      {
+        "name": "tailored_resumes_application_id_fkey",
+        "constrained_columns": [
+          "application_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "applications",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "gap_reports": [
+      {
+        "name": "gap_reports_application_id_fkey",
+        "constrained_columns": [
+          "application_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "applications",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "scam_checks": [
+      {
+        "name": "scam_checks_application_id_fkey",
+        "constrained_columns": [
+          "application_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "applications",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "profile": [],
+    "profile_projects": [
+      {
+        "name": "profile_projects_profile_id_fkey",
+        "constrained_columns": [
+          "profile_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "profile",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "resource_skills": [
+      {
+        "name": "resource_skills_resource_id_fkey",
+        "constrained_columns": [
+          "resource_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "resources",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      },
+      {
+        "name": "resource_skills_skill_name_fkey",
+        "constrained_columns": [
+          "skill_name"
+        ],
+        "referred_schema": null,
+        "referred_table": "skills",
+        "referred_columns": [
+          "name"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "skills": [],
+    "scam_patterns": [],
+    "company_watchlist": [],
+    "settings": [],
+    "resources": [],
+    "status_events": [
+      {
+        "name": "status_events_application_id_fkey",
+        "constrained_columns": [
+          "application_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "applications",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "notifications": [],
+    "llm_cache": [],
+    "gmail_sync_state": []
+  },
+  "orphan_checks": {
+    "app_tailored_resume_orphans": 0,
+    "app_gap_report_orphans": 0,
+    "scam_check_app_orphans": 0,
+    "prep_recommendation_app_orphans": 0
+  },
+  "status_distribution": {
+    "OFFER": 1,
+    "READY_TO_APPLY": 832,
+    "DISCOVERED": 7,
+    "INTERVIEW": 3,
+    "GHOSTED": 3,
+    "REJECTED": 3,
+    "OA_INVITE": 1,
+    "APPLIED": 2
+  },
+  "status_source_distribution": {
+    "null": 6,
+    "manual": 836,
+    "gmail_auto": 7,
+    "auto_ghost": 3
+  },
+  "indexes_and_constraints": {
+    "applications": {
+      "primary_key": {
+        "constrained_columns": [
+          "id"
+        ],
+        "name": "applications_pkey",
+        "comment": null,
+        "dialect_options": {
+          "postgresql_include": []
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_applications_last_contact_date",
+          "unique": false,
+          "column_names": [
+            "last_contact_date"
+          ],
+          "include_columns": [],
+          "dialect_options": {
+            "postgresql_include": []
+          }
+        },
+        {
+          "name": "idx_applications_status",
+          "unique": false,
+          "column_names": [
+            "status"
+          ],
+          "include_columns": [],
+          "dialect_options": {
+            "postgresql_include": []
+          }
+        },
+        {
+          "name": "uq_applications_company_role_source",
+          "unique": true,
+          "column_names": [
+            "company",
+            "role",
+            "source"
+          ],
+          "duplicates_constraint": "uq_applications_company_role_source",
+          "include_columns": [],
+          "dialect_options": {
+            "postgresql_include": []
+          }
+        }
+      ],
+      "unique_constraints": [
+        {
+          "column_names": [
+            "company",
+            "role",
+            "source"
+          ],
+          "name": "uq_applications_company_role_source",
+          "comment": null,
+          "dialect_options": {
+            "postgresql_include": [],
+            "postgresql_nulls_not_distinct": false
+          }
+        }
+      ]
+    }
+  },
+  "is_demo_column_check": {
+    "exists": true,
+    "column_type": "[BOOLEAN()]"
+  }
+}

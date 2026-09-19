@@ -1,0 +1,197 @@
+{
+  "student_skills": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 67,
+      "content": "| **student_skills** | `services/gap_agent.py:31` | `profile_projects` | Partial | Extracted from `profile_projects` tags at runtime. |"
+    },
+    {
+      "file": ".\\services\\gap_agent.py",
+      "line": 31,
+      "content": "student_skills = set()"
+    },
+    {
+      "file": ".\\services\\gap_agent.py",
+      "line": 36,
+      "content": "student_skills.add(tag.lower())"
+    },
+    {
+      "file": ".\\services\\gap_agent.py",
+      "line": 41,
+      "content": "if skill.lower() in student_skills:"
+    }
+  ],
+  "RESOURCE_DATABASE": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 68,
+      "content": "| **RESOURCE_DATABASE** | 0 hits | `resources` | Yes | `services/prep_agent.py` queries `resources` & `resource_skills` tables. |"
+    }
+  ],
+  "RED_FLAG_PHRASES": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 69,
+      "content": "| **RED_FLAG_PHRASES** | `scam_check.py:78-80` | `scam_patterns` | **No** | Payment, urgency, and unofficial channel phrases hardcoded in `scam_check.py`. |"
+    }
+  ],
+  "LOOKALIKE_INDICATORS": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 70,
+      "content": "| **LOOKALIKE_INDICATORS** | `scam_check.py:75-76` | `scam_patterns` | Partial | Queries `scam_patterns` table; falls back to hardcoded python list. |"
+    }
+  ],
+  "PUBLIC_EMAIL_DOMAINS": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 71,
+      "content": "| **PUBLIC_EMAIL_DOMAINS**| `scam_check.py:73-74` | `scam_patterns` | Partial | Queries `scam_patterns` table; falls back to hardcoded python set. |"
+    }
+  ],
+  "base_resume.json": [
+    {
+      "file": ".\\API_CONTRACT.md",
+      "line": 92,
+      "content": "**Request:** empty body \u2014 operates on the row's existing `jd_text` and the student's base resume (stored separately, e.g. `base_resume.json` in the repo)."
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 15,
+      "content": "5. **Tailoring Service Reads `base_resume.json` instead of `profile` DB Table**: `services/tailoring.py` loads base resume bullets from local JSON rather than querying `profile` and `profile_projects` tables."
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 72,
+      "content": "| **base_resume.json** | `services/tailoring.py:11` | `profile` / `profile_projects` | **No** | Loads resume from `base_resume.json` file on disk instead of DB table `profile`. |"
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 87,
+      "content": "| **Tailoring Agent** | `applications` (Reads file `base_resume.json`) | `tailored_resumes`, `applications` | `POST /applications/{id}/tailor` | **Executed**: Embeds JD and ranks resume bullets without LLM. Updates `tailored_resume_id` on `applications`. |"
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 186,
+      "content": "| **4** | Refactor `services/tailoring.py` to read profile bullets from `profile` & `profile_projects` DB tables instead of `base_resume.json`. | **M** | None | Makes tailoring fully dynamic from user profile in DB. |"
+    },
+    {
+      "file": ".\\run_all_agents_cli.py",
+      "line": 87,
+      "content": "base_resume_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), \"base_resume.json\")"
+    }
+  ],
+  "base_resume.tex": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 73,
+      "content": "| **base_resume.tex** | `tailoring_agent.py:157` | N/A | File-backed | TeX template file used for PDF compilation. |"
+    },
+    {
+      "file": ".\\tailoring_agent.py",
+      "line": 157,
+      "content": "tex_path: str = \"base_resume.tex\","
+    },
+    {
+      "file": ".\\tailoring_agent.py",
+      "line": 190,
+      "content": "def __init__(self, tex_path: str = \"base_resume.tex\", keywords_path: str = \"bullet_keywords.json\"):"
+    },
+    {
+      "file": ".\\test_tailoring_agent.py",
+      "line": 12,
+      "content": "cls.base_tex = \"base_resume.tex\""
+    },
+    {
+      "file": ".\\services\\tailoring.py",
+      "line": 133,
+      "content": "Converts base_resume.tex into a dynamic LaTeX template populated with DB profile info"
+    }
+  ],
+  "gmail_sync_state.json": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 14,
+      "content": "4. **Gmail Tracker Persists State to File instead of DB**: `services/gmail_tracker.py` reads/writes sync state to `gmail_sync_state.json` on disk rather than the existing `gmail_sync_state` database table."
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 58,
+      "content": "| **gmail_sync_state** | Present | 5 | 1 | PK: `id`. Master sync state table (currently bypassed by `gmail_sync_state.json` file). |"
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 74,
+      "content": "| **gmail_sync_state.json**| `services/gmail_tracker.py:16`| `gmail_sync_state` | **No** | Reads/writes sync state to JSON file instead of `gmail_sync_state` DB table. |"
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 185,
+      "content": "| **3** | Refactor `services/gmail_tracker.py` to persist sync history in `gmail_sync_state` DB table instead of `gmail_sync_state.json`. | **S** | None | Aligns tracker state storage with PostgreSQL. |"
+    },
+    {
+      "file": ".\\scripts\\migrate_gmail_sync_state.py",
+      "line": 16,
+      "content": "json_path = os.path.abspath(\"gmail_sync_state.json\")"
+    },
+    {
+      "file": ".\\scripts\\migrate_gmail_sync_state.py",
+      "line": 37,
+      "content": "logger.info(\"Successfully migrated gmail_sync_state.json into DB gmail_sync_state table.\")"
+    },
+    {
+      "file": ".\\scripts\\migrate_gmail_sync_state.py",
+      "line": 42,
+      "content": "logger.info(\"gmail_sync_state.json not found, ensuring DB record exists.\")"
+    }
+  ],
+  "SerpAPI": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 76,
+      "content": "| **SerpAPI / Celery** | 0 code hits | N/A | Deprecated | Verified completely removed from codebase. References only in audit docs. |"
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 169,
+      "content": "| **Sourcing (Adzuna + Greenhouse/Lever + Unstop)** | **Done** | `services/job_sourcing.py` implements all 4 adapters. SerpAPI references completely removed. Watchlist in `companies.json`. |"
+    },
+    {
+      "file": ".\\CLOSURE.md",
+      "line": 13,
+      "content": "| **1. Job Sourcing & SerpAPI Deprecation** | **Done** | `services/job_sourcing.py` implements Adzuna, Greenhouse, Lever, and Unstop sourcing. SerpAPI code and env variables fully removed. `companies.json` watchlist configured. All job listings deduplicated and screened via rule engine before DB insertion. |"
+    }
+  ],
+  "Celery": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 76,
+      "content": "| **SerpAPI / Celery** | 0 code hits | N/A | Deprecated | Verified completely removed from codebase. References only in audit docs. |"
+    },
+    {
+      "file": ".\\AUDIT.md",
+      "line": 170,
+      "content": "| **APScheduler (No Celery)** | **Done** | `services/scheduler.py` runs `AsyncIOScheduler` inside FastAPI lifespan. Celery dependencies removed. |"
+    },
+    {
+      "file": ".\\CLOSURE.md",
+      "line": 23,
+      "content": "| **11. Celery Deprecation & Clean-up** | **Done** | Audited entire codebase. Zero Celery code, dependencies, tasks, or documentation references remain. |"
+    }
+  ],
+  "Glassdoor": [],
+  "question-bank": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 77,
+      "content": "| **Question-Bank / Answer-Feedback** | `frontend/lib/api.ts:245` | N/A | **Dead Call** | Frontend retains dead call to `/prep/evaluate-answer`. Backend endpoints deleted. |"
+    }
+  ],
+  "answer-feedback": [
+    {
+      "file": ".\\AUDIT.md",
+      "line": 77,
+      "content": "| **Question-Bank / Answer-Feedback** | `frontend/lib/api.ts:245` | N/A | **Dead Call** | Frontend retains dead call to `/prep/evaluate-answer`. Backend endpoints deleted. |"
+    }
+  ]
+}

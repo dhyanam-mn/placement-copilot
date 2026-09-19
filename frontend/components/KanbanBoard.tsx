@@ -125,15 +125,22 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ onSelectApplication })
                     className="p-3.5 rounded-lg border border-accent/30 bg-white/80 hover:bg-white transition-colors cursor-pointer space-y-2.5"
                   >
                     <div>
-                      <h3 className="text-sm font-semibold text-text leading-snug">
-                        {app.role}
-                      </h3>
+                      <div className="flex items-center justify-between gap-1">
+                        <h3 className="text-sm font-semibold text-text leading-snug">
+                          {app.role}
+                        </h3>
+                        {app.is_demo && (
+                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300 shrink-0">
+                            DEMO
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-text/70">{app.company}</p>
                     </div>
 
-                    {app.summary && (
+                    {app.jd_text && (
                       <p className="text-xs text-text/60 line-clamp-3 leading-relaxed">
-                        {app.summary}
+                        {app.jd_text}
                       </p>
                     )}
 
@@ -142,7 +149,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ onSelectApplication })
                         className="text-[11px] font-medium px-2 py-0.5 rounded bg-bg text-text/80"
                         style={{ color: col.pillColor }}
                       >
-                        {app.status_label || col.title}
+                        {col.title}
                       </span>
                       {app.match_score != null && (
                         <span className="text-[11px] text-text/50">
@@ -185,15 +192,22 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ onSelectApplication })
                       className="p-3.5 rounded-lg border border-accent/30 bg-white/60 hover:bg-white/90 transition-colors cursor-pointer space-y-2.5"
                     >
                       <div>
-                        <h4 className="text-sm font-semibold text-text leading-snug">
-                          {app.role}
-                        </h4>
+                        <div className="flex items-center justify-between gap-1">
+                          <h4 className="text-sm font-semibold text-text leading-snug">
+                            {app.role}
+                          </h4>
+                          {app.is_demo && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300 shrink-0">
+                              DEMO
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs text-text/70">{app.company}</p>
                       </div>
 
-                      {app.summary && (
+                      {app.jd_text && (
                         <p className="text-xs text-text/60 line-clamp-2 leading-relaxed">
-                          {app.summary}
+                          {app.jd_text}
                         </p>
                       )}
 
@@ -202,7 +216,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ onSelectApplication })
                           className="text-[11px] font-medium"
                           style={{ color: col.pillColor }}
                         >
-                          {app.status_label || col.title}
+                          {col.title}
                         </span>
                       </div>
                     </div>

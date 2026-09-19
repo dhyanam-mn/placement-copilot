@@ -64,32 +64,33 @@ Instructions:
 - Do NOT output any preamble, markdown headings, quotes, or conversational filler.
 - Be direct, professional, and clear."""
 
-    elif task_type == "answer_feedback":
-        question = context.get("question", "")
-        student_answer = context.get("student_answer", "")
-        expected_topics = context.get("expected_topics", [])
-        topics_str = (
-            ", ".join(expected_topics)
-            if expected_topics
-            else "Key technical concepts"
-        )
+    elif task_type == "prep_recommendations":
+        jd_summary = context.get("jd_summary", "")
+        candidates = context.get("candidates", [])
 
-        return f"""You are an expert technical interviewer evaluating a student's answer.
-Evaluate whether the answer covers the expected key topics and provide concise, constructive feedback.
+        candidates_lines = []
+        for c in candidates:
+            if isinstance(c, dict):
+                c_id = c.get("id")
+                c_title = c.get("title", "")
+                c_skills = ", ".join(c.get("skills", []))
+                candidates_lines.append(f"- ID: {c_id}, Title: {c_title}, Skills: {c_skills}")
 
-Interview Question:
-"{question}"
+        candidates_text = "\n".join(candidates_lines) if candidates_lines else "- No candidate resources provided"
 
-Expected Key Topics:
-{topics_str}
+        return f"""You are Placement Copilot's Prep Agent.
+Given a Job Description summary and candidate learning resources, recommend up to 10 relevant resources to bridge technical skill gaps.
 
-Student's Answer:
-"{student_answer}"
+Job Description Summary:
+{jd_summary}
+
+Candidate Learning Resources:
+{candidates_text}
 
 Instructions:
-- Evaluate whether the student covers the expected key topics.
-- Write 2-3 sentences of specific, constructive feedback.
-- Do NOT output preamble, markdown headings, or filler text."""
+- Output STRICT JSON only: a JSON array of objects.
+- Each object must have fields: "resource_id" (integer), "reason" (string, concise rationale), and "est_hours" (integer).
+- Do NOT output preamble, markdown formatting, code fences, or extra text."""
 
     elif task_type == "gap_summary":
         if "jd_required_skills" in context or "missing_skills" in context:
@@ -160,7 +161,7 @@ Instructions:
 async def llm_generate(payload: LLMGenerateRequest) -> LLMGenerateResponse:
     """
     Generate LLM text response using local Ollama (llama3.1:8b).
-    Handles scam_explanation, answer_feedback, and gap_summary tasks.
+    Handles scam_explanation, prep_recommendations, and gap_summary tasks.
     Falls back gracefully to error='llm_unavailable' if Ollama is offline or times out (10s limit).
     """
     prompt = _build_prompt(payload.task_type, payload.context)

@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Python 3 Official Documentation",
+    "url": "https://docs.python.org/3/",
+    "is_active": true,
+    "skills": ["Python"]
+  },
+  {
+    "title": "Docker Deep Dive & Container Guide",
+    "url": "https://docs.docker.com/",
+    "is_active": true,
+    "skills": ["Docker"]
+  },
+  {
+    "title": "PostgreSQL Official Documentation",
+    "url": "https://www.postgresql.org/docs/",
+    "is_active": true,
+    "skills": ["PostgreSQL"]
+  },
+  {
+    "title": "PyTorch Official Documentation & Tutorials",
+    "url": "https://pytorch.org/tutorials/",
+    "is_active": true,
+    "skills": ["PyTorch"]
+  },
+  {
+    "title": "FastAPI Complete Documentation",
+    "url": "https://fastapi.tiangolo.com/",
+    "is_active": true,
+    "skills": ["FastAPI", "Python"]
+  },
+  {
+    "title": "System Design Primer",
+    "url": "https://github.com/donnemartin/system-design-primer",
+    "is_active": true,
+    "skills": ["System Design"]
+  },
+  {
+    "title": "OpenCV & Computer Vision Tutorials",
+    "url": "https://docs.opencv.org/",
+    "is_active": true,
+    "skills": ["Computer Vision"]
+  },
+  {
+    "title": "Kubernetes Official Documentation",
+    "url": "https://kubernetes.io/docs/",
+    "is_active": true,
+    "skills": ["Kubernetes"]
+  },
+  {
+    "title": "React Official Documentation",
+    "url": "https://react.dev/",
+    "is_active": true,
+    "skills": ["React"]
+  },
+  {
+    "title": "TypeScript Handbook",
+    "url": "https://www.typescriptlang.org/docs/",
+    "is_active": true,
+    "skills": ["TypeScript"]
+  }
+]

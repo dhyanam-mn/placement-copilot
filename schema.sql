@@ -38,7 +38,7 @@ CREATE TABLE applications (
     company              TEXT NOT NULL,
     role                 TEXT NOT NULL,
     jd_text              TEXT NOT NULL,               -- full job description, used by Scout/Tailoring
-    source               TEXT NOT NULL CHECK (source IN ('serpapi', 'unstop')),
+    source               TEXT NOT NULL CHECK (source IN ('adzuna', 'greenhouse', 'lever', 'unstop')),
 
     -- Where it stands
     status               application_status NOT NULL DEFAULT 'DISCOVERED',
@@ -137,11 +137,11 @@ VALUES
 
     ('Razorpay', 'SDE Intern',
      'Backend engineering internship — REST APIs, SQL, distributed systems fundamentals.',
-     'serpapi', 'OA_INVITE', 'gmail_auto', 0.61, now() - INTERVAL '10 days'),
+     'greenhouse', 'OA_INVITE', 'gmail_auto', 0.61, now() - INTERVAL '10 days'),
 
     ('Zeta Suite', 'Software Engineer',
      'Full-stack role — React, Node.js, MongoDB, and cloud deployment experience preferred.',
-     'serpapi', 'GHOSTED', 'auto_ghost', 0.72, now() - INTERVAL '50 days'),
+     'lever', 'GHOSTED', 'auto_ghost', 0.72, now() - INTERVAL '50 days'),
 
     ('Skylark Labs', 'ML Engineer Intern',
      'Computer vision pipeline work — YOLO-family models, model deployment, edge inference.',
@@ -149,4 +149,4 @@ VALUES
 
     ('Innovaccer', 'SDE-1',
      'Strong DSA fundamentals, system design basics, SQL, and one backend language.',
-     'serpapi', 'DISCOVERED', NULL, 0.54, now());
+     'adzuna', 'DISCOVERED', NULL, 0.54, now());

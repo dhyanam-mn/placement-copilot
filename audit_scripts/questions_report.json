@@ -1,0 +1,2097 @@
+{
+  "q1_ghosted_rows": [
+    {
+      "id": 3,
+      "company": "Zeta Suite",
+      "role": "Software Engineer",
+      "source": "serpapi",
+      "status": "GHOSTED",
+      "status_source": "auto_ghost",
+      "last_contact_date": "2026-07-30 17:18:43.843133+05:30",
+      "last_updated": "2026-09-18 18:13:35.668079+05:30",
+      "is_demo": false,
+      "gap_report_id": 3
+    },
+    {
+      "id": 535,
+      "company": "Scam Corp",
+      "role": "Data Entry Specialist",
+      "source": "unstop",
+      "status": "GHOSTED",
+      "status_source": "auto_ghost",
+      "last_contact_date": "2026-07-31 05:36:15.912262+05:30",
+      "last_updated": "2026-09-19 05:36:15.970988+05:30",
+      "is_demo": true,
+      "gap_report_id": 75
+    },
+    {
+      "id": 538,
+      "company": "Uber Infrastructure",
+      "role": "Software Engineer II",
+      "source": "adzuna",
+      "status": "GHOSTED",
+      "status_source": "auto_ghost",
+      "last_contact_date": "2026-08-02 05:36:15.912262+05:30",
+      "last_updated": "2026-09-19 05:43:46.560309+05:30",
+      "is_demo": true,
+      "gap_report_id": 77
+    }
+  ],
+  "q1_second_row_details": {
+    "row": {
+      "id": 535,
+      "company": "Scam Corp",
+      "role": "Data Entry Specialist",
+      "source": "unstop",
+      "status": "GHOSTED",
+      "status_source": "auto_ghost",
+      "last_contact_date": "2026-07-31 05:36:15.912262+05:30",
+      "last_updated": "2026-09-19 05:36:15.970988+05:30",
+      "is_demo": true,
+      "gap_report_id": 75
+    },
+    "gap_report": {
+      "id": 75,
+      "summary_text": "Application for 'Scam Corp' (Data Entry Specialist) ended in GHOSTED."
+    },
+    "notifications": []
+  },
+  "q2_splits": [
+    {
+      "is_demo": false,
+      "source": "adzuna",
+      "count": 18
+    },
+    {
+      "is_demo": false,
+      "source": "greenhouse",
+      "count": 855
+    },
+    {
+      "is_demo": false,
+      "source": "serpapi",
+      "count": 22
+    },
+    {
+      "is_demo": false,
+      "source": "unstop",
+      "count": 10
+    },
+    {
+      "is_demo": true,
+      "source": "adzuna",
+      "count": 7
+    },
+    {
+      "is_demo": true,
+      "source": "greenhouse",
+      "count": 2
+    },
+    {
+      "is_demo": true,
+      "source": "lever",
+      "count": 1
+    },
+    {
+      "is_demo": true,
+      "source": "unstop",
+      "count": 2
+    }
+  ],
+  "q2_duplicates": [
+    {
+      "company": "Innovaccer Test",
+      "role": "SDE-1",
+      "source": "serpapi",
+      "cnt": 14
+    },
+    {
+      "company": "Orchestrator Safe Co",
+      "role": "Python Developer",
+      "source": "adzuna",
+      "cnt": 8
+    },
+    {
+      "company": "Resume Co",
+      "role": "Full Stack Engineer",
+      "source": "adzuna",
+      "cnt": 8
+    },
+    {
+      "company": "TechNova Corp (Suspected Scam)",
+      "role": "Data Entry & Remote Coding Specialist",
+      "source": "unstop",
+      "cnt": 5
+    },
+    {
+      "company": "Skydio",
+      "role": "Computer Vision Engineer",
+      "source": "serpapi",
+      "cnt": 5
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Finance Operations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Field Marketing Manager, SMB and Mid-Market - EMEA",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Support Experience (Greater China Support)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate, Sanctions",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "International Accounting Lead",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Incident Response Manager - Security",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Corporate Development M&A Integration Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend/API Engineer, Money as a Service (Product)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Global Partnerships Lead \u2014 Greater China, Hong Kong & Singapore",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Manager, Revenue Suite",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Money Management Demand Generation Manager, Americas",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Technical Program Management",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Payments Performance (SEA and Greater China)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Forward Deployed Engineer, Privy",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Customer Success Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Payments",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Billing Collections",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Growth Marketing Manager, Greater China",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Administrative Coordinator Program",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Machine Learning Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Manager, Enterprise",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Financial Data Analyst",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Analyst, NYC",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Deal Pricing",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Commercial Counsel, EMEA",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Risk Operations Technology Programs",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Scientist, Fraud",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Hong Kong Regulatory Compliance & Money Laundering Reporting Officer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "EMEA Chief Compliance Officer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Competitive Programs",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate - Managed Support (Includes Weekend Rotation)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Capital Markets Investments",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Legal Entity Controller",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate - Bridge (CDMX)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Solutions Architecture - Platforms (Chicago)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Excellence Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Forward Deployed (Privy)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Retail (Grower)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Investigator",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Services Manager, Professional Services Sales (SEA/GCN)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Manager, RFA",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Channel Sales Executive, SaaS Platforms",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Insights, Tax",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "AEO and GEO Marketing Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Science Manager, Risk",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Growth",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Intelligent Commerce",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "ML Engineer Manager, AI Conversation Platform",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, SMB Hunter (Central Eastern Europe)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate, New Grad (Mexico)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Global Filing Specialist, Tax",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Android Engineer, Terminal",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Money Management, Finance & Strategy",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Link Social Lead",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager - Legal Entity Controller",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Credit Risk Operations Associate (CDMX)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Administrative Business Partner, Office of the President",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Requirements Management (Risk)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Brand Producer, Link",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Account Executive -Grower",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of AEO & SEO",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Firmware Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Data Transformation",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Science Manager, Finance and Strategy",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Fraud Operations Team Lead",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Integration Engineer, Professional Services",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Frontend Engineer, Payments & Risk",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Client Platform Security Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Developer & End-user Experience Platform",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Internal Audit - Regulatory Lead, EMEA",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Integration Reliability Engineer, Payments",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Comms, Public Goods",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Startups SaaS Platforms Grower",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Sales, Billing",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Brand Studio Operations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Manager, Radar",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Creative Director, Event Design",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Marketing Operations Program Manager, Events APAC",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Credit Risk Strategy and Analytics",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Account Executive, Revenue Suite (Grower)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Agentic Commerce",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Integration Engineer, SEA/GCN",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Finance & Strategy Partner",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "APAC Executive Marketing",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Solution Architecture Platforms",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Financial Connections TechOps Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product - Terminal",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Solutions Architecture- Enterprise Hunter",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Infrastructure",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive - SEA, Platforms (Grower)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive Product - Tax",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "KYB/KYC Operations Associate, Bridge (English fluency)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "GTM Recruiter",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Consumer Operations, Program Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Scientist, Global Growth",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Lifecycle Marketing Manager, Capital",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Billing",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Corporate Communications",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Link",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Communities Partner Development Manager, SaaS Platforms",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Account Executive, Privy",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Corporate Accounting Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Channel Sales Executive",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Food Experience Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Fraud Operations Associate SDC",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Deal Pricing Strategist",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Internal Product Engineer, Developer Productivity AI",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Accounts Receivable Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate, Apprenticeship",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Bridge",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Internal Audit Data Analytics Lead",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engagement Manager, Professional Services (SEA/GCN)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Strategic Platform Partnerships",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Infrastructure Engineer, Privy",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate, Financial Crimes (AML Investigations)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Manager, Key Accounts",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Payments and Risk",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Core Business Recruiter (Fixed Term Contract)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Scientist, Core Infrastructure",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Global People Support - Team Lead",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Machine Learning - Credit Risk",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "India Tax Lead - Tax, APAC",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Marketing Operations Program Manager, EMEA Events",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "GTM Recruiter, APAC (Fixed Term Contract)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Platform (Privy)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Money as a Service",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Executive Advisory Programs Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Marketing Operations Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Company Strategy & Operations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Consumer Operations Associate",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Financial Analyst, Business F&S",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Fraud Operations Associate (Mandarin Speaking)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, AI Conversation Platform",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Capital Markets, FX Specialist",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Contracting Operations Specialist",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Solutions Architecture - Enterprise Hunter (West)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Finance and Strategy Analyst",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Fraud Operations Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Sales Development",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Analyst",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Go-to-Market Enablement Business Partners",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Credit Risk Analyst, North American Underwriter",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Manager, Metronome",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Funds Reconciliation Manager, Luxembourg",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Internal Auditor - APAC Regulatory & Financial Operations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Credit Risk Operations Associate",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Strategics",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Integration Engineer, Metronome",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Velocity Platforms - Hunter",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Design Engineer, Presence",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Executive Engagement Marketing Manager, Americas",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Developer & End User Experience Platform",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Mobile Engineer, Treasury",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Fraud Operations Manager (Mandarin-speaking)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Marketing, Southeast Asia",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Frontend Engineer, Expansion",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Forward Deployed AI Accelerator, Marketing",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Implementation Consultant (SEA/GCN)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate - Product Support Operations (CDMX)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Billing/Tax",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Finance and Strategy Specialist",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "GTM Operations Process Architect",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Investment Lead, Intercept",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Cloud Security Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Startup Sales (Grower) - AMER",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "GTM Strategy & Operations Analyst",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Global Sanctions",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager of Managers, Service Infrastructure",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Business Partner Analyst",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Velocity Platforms (Hunter)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Manager, Stripe Delivery Centre",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Support Specialist",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Crypto Controls and Compliance Advisor",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Business Value Consultant",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Specialist Solutions Architecture, Revenue (AMER)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Billing Configuration",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Android BSP Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Technical Account Management",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "ARG Engineering Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Campaign Strategy & Operations Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Scientist, Payments",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "GTM Product Marketing Manager, Commerce Experiences",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Enterprise & Ecosystem",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "GSI Partner Development Lead- EMEA",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Startups (Grower)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Customer Success Leader (Greater China)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Payments Experiences",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Services Manager, Professional Services Sales",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Critical Support Operations Associate, Weekend Coverage",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Abuse Control Engineering",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Marketing Services Program Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Enterprise Solutions Architecture Platforms",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Engineer, Web Presence and Platform",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Creative Director, Copy & Campaigns",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Account Executive - Hunter",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "EMEA Demand Generation, Platforms",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Forward Deployed Security Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Implementation Consultant (AUNZ)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Fraud Strategist",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "AI Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Communications, APAC",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Art Director",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Crypto Product Accounting",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Financial Crimes Analyst, Crypto Investigations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Compliance Manager, User Enablement",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, UK Velocity Hunter",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Data Analyst, Payments",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, SMB (Benelux)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, SMB (Hunter)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Terminal",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Business Systems Architect (Tax)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Fraud Patterns Analyst",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Market Intelligence, Product Marketing",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Marketing Operations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Manager, Product Support Operations - Top Startups",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Strategic Risk Programs, New Markets",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Head of Private Equity and Advisory Partnerships",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Indirect Tax Advisory Consultant",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Financial Connections TechOps Integration Reliability Engineer",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Full Stack Software Engineer, Brazil",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Payments",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Accounting AI Solutions Lead",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Benefits Program Manager, EMEA",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Monetization Operations Analyst",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Checkout Optimization",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager - Core Performance",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Deal Strategist",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Operations Associate, Financial Crimes EDD/PEP",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, APAC & EMEA Cards",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Android Engineer, Terminal OS Platform",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "GTM Recruiter, AMER (Fixed Term)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, SMB (Grower)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Implementation Specialist, GTM Accelerate",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Core Technology",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Core Recruiter (Risk, Partnerships, Operations)",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Billing Products",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Administrative Business Partner",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "F&S COE Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Credit Risk Analyst Commercial Underwriter, West Coast",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Design Program Manager, Research Operations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Incident Response Manager - Abuse Operations",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Privy",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Engineering Manager, Machine Learning - Fraud Detection",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Credit Risk Operations Team Lead",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Designer, Web Presence & Platform",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Enterprise Paid Digital Marketing Manager",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Integrated Campaigns Manager - Stablecoins, Crypto, and Bridge",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Backend Engineer, Link",
+      "source": "greenhouse",
+      "cnt": 3
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive , Grower - Iberia Market",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise (DACH Market)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Cross Border China",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Existing Business",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Internal Audit - Treasury",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Commercial Hunter (Japanese Fluency)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales - Billing",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, DACH, Commercial (Existing Business)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales (Data Pipeline)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise - Hunter",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Platforms (Existing Business)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales (Terminal)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales - Money Management APAC",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales - Billing (Velocity)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Existing Business (Central Eastern Europe)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product (Capital) - Hunter",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Financial Services, Grower",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales (Data)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Privy",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive Product - Fraud & Risk",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive - LATAM",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Nordics",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise Grower (Israel)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales - Optimised Checkout",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise Hunter (Japanese fluency)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Funded Startups - Israel",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise Hunter (French-speaking)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product - Managed Payments",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product (Payouts) - Hunter",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise (Grower)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product - Link",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, hunter",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive - Enterprise, Growth",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales - Currency Management",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Skydio",
+      "role": "Computer Vision Pipeline Engineer",
+      "source": "unstop",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales, Metronome (Hunter)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales- Money Management ANZ",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise Platforms, Tier 2 Grower",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise Grower, Platforms (Israel)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales - Tax",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Platforms Hunter (German fluency)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise Platforms (Grower)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Platforms (Hunter)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Hunter (Central Eastern Europe)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise Platforms, Hunter",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Commercial Hunter",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales - Issuing and Treasury",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Scam Tech Corp",
+      "role": "Data Entry",
+      "source": "adzuna",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales (Billing) - Grower",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Enterprise (Hunter)",
+      "source": "greenhouse",
+      "cnt": 2
+    },
+    {
+      "company": "Stripe",
+      "role": "Account Executive, Product Sales (Billing) - Hunter",
+      "source": "greenhouse",
+      "cnt": 2
+    }
+  ],
+  "q2_total_rows": 917,
+  "q7_resources_per_skill": [
+    {
+      "skill_name": "python",
+      "resource_count": 4
+    },
+    {
+      "skill_name": "Python",
+      "resource_count": 4
+    },
+    {
+      "skill_name": "computer vision",
+      "resource_count": 2
+    },
+    {
+      "skill_name": "Computer Vision",
+      "resource_count": 2
+    },
+    {
+      "skill_name": "react",
+      "resource_count": 2
+    },
+    {
+      "skill_name": "React",
+      "resource_count": 2
+    },
+    {
+      "skill_name": "system design",
+      "resource_count": 2
+    },
+    {
+      "skill_name": "System Design",
+      "resource_count": 2
+    },
+    {
+      "skill_name": "algorithms",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "c++",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "data structures",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "deep learning",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "Docker",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "FastAPI",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "java",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "javascript",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "Kubernetes",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "machine learning",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "PostgreSQL",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "PyTorch",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "sql",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "SQL",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "TypeScript",
+      "resource_count": 1
+    },
+    {
+      "skill_name": "cloud deployment",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "distributed systems",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "DSA",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "edge inference",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "GeoTIFF",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "LoRA",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "MongoDB",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "Node.js",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "object detection",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "rasterio",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "Redis",
+      "resource_count": 0
+    },
+    {
+      "skill_name": "YOLO",
+      "resource_count": 0
+    }
+  ],
+  "q7_zero_resource_skills_count": 12,
+  "q7_zero_resource_skills": [
+    "cloud deployment",
+    "distributed systems",
+    "DSA",
+    "edge inference",
+    "GeoTIFF",
+    "LoRA",
+    "MongoDB",
+    "Node.js",
+    "object detection",
+    "rasterio",
+    "Redis",
+    "YOLO"
+  ]
+}

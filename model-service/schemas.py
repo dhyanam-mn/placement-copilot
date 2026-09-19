@@ -49,7 +49,7 @@ class ErrorResponse(BaseModel):
 # /llm-generate Schemas
 # ==========================================
 
-TaskType = Literal["scam_explanation", "answer_feedback", "gap_summary"]
+TaskType = Literal["scam_explanation", "prep_recommendations", "gap_summary"]
 
 
 class RecruiterInfo(BaseModel):
@@ -63,10 +63,15 @@ class ScamExplanationContext(BaseModel):
     recruiter_info: Optional[RecruiterInfo] = None
 
 
-class AnswerFeedbackContext(BaseModel):
-    question: str
-    student_answer: str
-    expected_topics: List[str] = Field(default_factory=list)
+class CandidateResourceItem(BaseModel):
+    id: int
+    title: str
+    skills: List[str] = Field(default_factory=list)
+
+
+class PrepRecommendationsContext(BaseModel):
+    jd_summary: str
+    candidates: List[CandidateResourceItem] = Field(default_factory=list)
 
 
 class RejectedApplication(BaseModel):
@@ -81,7 +86,7 @@ class GapSummaryContext(BaseModel):
 class LLMGenerateRequest(BaseModel):
     task_type: TaskType = Field(
         ...,
-        description="One of 'scam_explanation', 'answer_feedback', 'gap_summary'",
+        description="One of 'scam_explanation', 'prep_recommendations', 'gap_summary'",
     )
     context: Dict[str, Any] = Field(
         ...,
@@ -97,44 +102,3 @@ class LLMGenerateResponse(BaseModel):
         description="Optional error indicator (e.g. 'llm_unavailable' if LLM is unreachable or timed out)",
     )
 
-
-# ==========================================
-# /prep/evaluate-answer Schemas
-# ==========================================
-
-class PrepEvaluateRequest(BaseModel):
-    question: str = Field(..., description="Interview question")
-    student_answer: str = Field(..., description="Answer provided by student")
-    question_tags: List[str] = Field(
-        ...,
-        description="List of expected keywords/topics to evaluate against",
-    )
-
-
-class ResourceItem(BaseModel):
-    skill: str
-    title: str
-    url: str
-
-
-class PrepEvaluateResponse(BaseModel):
-    keyword_coverage: float = Field(
-        ...,
-        description="Fraction of question_tags found in student_answer (0.0 to 1.0)",
-    )
-    feedback_text: str = Field(
-        ...,
-        description="Constructive feedback on the answer",
-    )
-    flagged_as_weak: bool = Field(
-        ...,
-        description="True if keyword_coverage < 0.3",
-    )
-    recommended_resources: Optional[List[ResourceItem]] = Field(
-        default=None,
-        description="Curated documentation and resource links for target skills",
-    )
-    actionable_suggestions: Optional[List[str]] = Field(
-        default=None,
-        description="Specific actionable recommendations to improve skill coverage",
-    )

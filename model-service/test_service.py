@@ -87,21 +87,23 @@ def test_llm_generate_scam_explanation(client):
     print("[OK] /llm-generate scam_explanation passed")
 
 
-def test_llm_generate_answer_feedback(client):
+def test_llm_generate_prep_recommendations(client):
     payload = {
-        "task_type": "answer_feedback",
+        "task_type": "prep_recommendations",
         "context": {
-            "question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.",
-            "student_answer": "I used sliding window tiling and filtered false positives based on confidence thresholds.",
-            "expected_topics": ["hard negative mining", "sliding window tiling", "confidence thresholding"]
+            "jd_summary": "Looking for a Python software engineer with experience in Docker and PostgreSQL.",
+            "candidates": [
+                {"id": 1, "title": "Docker Crash Course", "skills": ["docker"]},
+                {"id": 2, "title": "PostgreSQL Deep Dive", "skills": ["postgresql"]}
+            ]
         }
     }
     response = client.post("/llm-generate", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert data["task_type"] == "answer_feedback"
+    assert data["task_type"] == "prep_recommendations"
     assert len(data["generated_text"]) > 0 or data.get("error") == "llm_unavailable"
-    print("[OK] /llm-generate answer_feedback passed")
+    print("[OK] /llm-generate prep_recommendations passed")
 
 
 def test_llm_generate_gap_summary(client):
@@ -124,21 +126,6 @@ def test_llm_generate_gap_summary(client):
     print("[OK] /llm-generate gap_summary passed")
 
 
-def test_prep_evaluate_answer(client):
-    payload = {
-        "question": "Walk me through your approach to hard-negative mining in the DronaMaps pipeline.",
-        "student_answer": "I used sliding window tiling and filtered false positives based on confidence thresholds.",
-        "question_tags": ["hard negative mining", "sliding window tiling", "confidence thresholding"]
-    }
-    response = client.post("/prep/evaluate-answer", json=payload)
-    assert response.status_code == 200
-    data = response.json()
-    assert data["keyword_coverage"] == 0.67
-    assert data["flagged_as_weak"] is False
-    assert len(data["feedback_text"]) > 0
-    print("[OK] /prep/evaluate-answer passed")
-
-
 if __name__ == "__main__":
     with TestClient(app) as test_c:
         test_health(test_c)
@@ -146,7 +133,6 @@ if __name__ == "__main__":
         test_embed_empty_string_error(test_c)
         test_embed_too_many_texts_error(test_c)
         test_llm_generate_scam_explanation(test_c)
-        test_llm_generate_answer_feedback(test_c)
+        test_llm_generate_prep_recommendations(test_c)
         test_llm_generate_gap_summary(test_c)
-        test_prep_evaluate_answer(test_c)
-        print("\nAll 8 smoke tests passed successfully!")
+        print("\nAll 7 smoke tests passed successfully!")

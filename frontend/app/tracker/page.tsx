@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getApplications, getStaleNudges, syncGmailTracker, updateApplicationStatus } from '@/lib/api';
+import { getApplications, getStaleNudges, syncGmailTracker, updateApplicationStatus, NudgesResponse } from '@/lib/api';
 import { Application, ApplicationStatus } from '@/types';
 import { MailCheck, RefreshCw, AlertCircle, Clock, Check, Loader2 } from 'lucide-react';
 
@@ -20,6 +20,7 @@ const STATUS_OPTIONS: ApplicationStatus[] = [
 export default function TrackerPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [nudges, setNudges] = useState<Application[]>([]);
+  const [thresholdDays, setThresholdDays] = useState(14);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
@@ -31,11 +32,12 @@ export default function TrackerPage() {
     setError(null);
     Promise.all([
       getApplications(),
-      getStaleNudges(14).catch(() => []),
+      getStaleNudges().catch(() => ({ threshold_days: 14, ghost_days: 45, total_nudges: 0, nudges: [] } as NudgesResponse)),
     ])
       .then(([appsRes, nudgesRes]) => {
         setApplications(appsRes.applications);
-        setNudges(nudgesRes);
+        setNudges(nudgesRes.nudges);
+        setThresholdDays(nudgesRes.threshold_days);
       })
       .catch((err) => setError(err.message || 'Failed to load tracker data'))
       .finally(() => setLoading(false));
@@ -114,7 +116,7 @@ export default function TrackerPage() {
         <div className="flex items-center space-x-2 pb-2 border-b border-accent/20">
           <Clock className="w-4 h-4 text-amber-600" />
           <h3 className="text-xs font-semibold text-text">
-            Stale Application Nudges (14+ Days Without Contact)
+            Stale Application Nudges ({thresholdDays}+ Days Without Contact)
           </h3>
           <span className="text-xs text-text/50">({nudges.length})</span>
         </div>

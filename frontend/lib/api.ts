@@ -163,13 +163,20 @@ export async function markNotificationRead(id: number): Promise<Notification> {
 
 // --- Gmail Tracker ---
 export async function syncGmailTracker(): Promise<any> {
-  return fetchJson<any>("/gmail/sync", {
+  return fetchJson<any>("/tracker/gmail/sync", {
     method: "POST",
   });
 }
 
-export async function getStaleNudges(days: number = 14): Promise<Application[]> {
-  return fetchJson<Application[]>(`/tracker/nudges?stale_threshold_days=${days}`);
+export interface NudgesResponse {
+  threshold_days: number;
+  ghost_days: number;
+  total_nudges: number;
+  nudges: Application[];
+}
+
+export async function getStaleNudges(days: number = 14): Promise<NudgesResponse> {
+  return fetchJson<NudgesResponse>(`/tracker/nudges?days=${days}`);
 }
 
 // --- Profile & Projects ---
